@@ -1,229 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>My Apps</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap');
-
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: #0E0F14;
-  color: #F0F2FF;
-  min-height: 100vh;
-  max-width: 430px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  padding: 0 20px 40px;
-}
-
-.top {
-  padding: 60px 0 32px;
-}
-
-.greeting {
-  font-size: 13px;
-  font-weight: 500;
-  color: #6B7080;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.title {
-  font-family: 'Instrument Serif', serif;
-  font-size: 40px;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-}
-
-.title em {
-  font-style: italic;
-  color: #C8F135;
-}
-
-.subtitle {
-  font-size: 14px;
-  color: #6B7080;
-  margin-top: 10px;
-  line-height: 1.5;
-}
-
-.date-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #16181F;
-  border: 1px solid #2A2D3A;
-  border-radius: 100px;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #9BA3B8;
-  margin-top: 16px;
-}
-
-.apps-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 8px;
-  flex: 1;
-}
-
-.app-card {
-  display: block;
-  text-decoration: none;
-  background: #16181F;
-  border: 1px solid #2A2D3A;
-  border-radius: 20px;
-  padding: 24px 22px;
-  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
-  position: relative;
-  overflow: hidden;
-}
-
-.app-card:active {
-  transform: scale(0.98);
-}
-
-.app-card.tasks {
-  border-color: rgba(61,90,254,0.3);
-}
-.app-card.tasks:active {
-  border-color: rgba(61,90,254,0.7);
-  box-shadow: 0 8px 32px rgba(61,90,254,0.2);
-}
-
-.app-card.workouts {
-  border-color: rgba(200,241,53,0.2);
-}
-.app-card.workouts:active {
-  border-color: rgba(200,241,53,0.5);
-  box-shadow: 0 8px 32px rgba(200,241,53,0.1);
-}
-
-.card-glow {
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 140px; height: 140px;
-  border-radius: 50%;
-  pointer-events: none;
-}
-.tasks .card-glow { background: radial-gradient(circle, rgba(61,90,254,0.15) 0%, transparent 70%); }
-.workouts .card-glow { background: radial-gradient(circle, rgba(200,241,53,0.12) 0%, transparent 70%); }
-
-.card-icon {
-  font-size: 36px;
-  margin-bottom: 14px;
-  display: block;
-}
-
-.card-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-.tasks .card-label { color: #3D5AFE; }
-.workouts .card-label { color: #C8F135; }
-
-.card-name {
-  font-family: 'Instrument Serif', serif;
-  font-size: 28px;
-  color: #F0F2FF;
-  line-height: 1;
-  margin-bottom: 8px;
-}
-
-.card-desc {
-  font-size: 13px;
-  color: #6B7080;
-  line-height: 1.5;
-  margin-bottom: 16px;
-}
-
-.card-arrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-}
-.tasks .card-arrow { color: #3D5AFE; }
-.workouts .card-arrow { color: #C8F135; }
-
-.card-arrow svg {
-  width: 16px; height: 16px;
-  stroke: currentColor;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: transform 0.2s;
-}
-.app-card:active .card-arrow svg {
-  transform: translateX(4px);
-}
-
-.footer {
-  text-align: center;
-  padding-top: 28px;
-  font-size: 11px;
-  color: #2A2D3A;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Morning Routine Checklist</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-done: #132e27;
+      --border: #334155;
+      --border-done: #059669;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.2);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 12px 10px 40px 10px;
+      display: flex;
+      justify-content: center;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .progress-bar-container {
+      background: #334155;
+      height: 7px;
+      border-radius: 999px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      background: var(--accent);
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .stats-count {
+      color: var(--accent);
+    }
+    .btn-reset {
+      background: #334155;
+      border: none;
+      color: #cbd5e1;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-reset:active {
+      background: #475569;
+    }
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .item:active {
+      transform: scale(0.985);
+    }
+    .item.checked {
+      background: var(--card-done);
+      border-color: var(--border-done);
+      opacity: 0.85;
+    }
+    .custom-checkbox {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      border: 2px solid #64748b;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f172a;
+      transition: all 0.2s ease;
+    }
+    .item.checked .custom-checkbox {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .custom-checkbox svg {
+      width: 14px;
+      height: 14px;
+      stroke: #0f172a;
+      stroke-width: 3;
+      fill: none;
+      display: none;
+    }
+    .item.checked .custom-checkbox svg {
+      display: block;
+    }
+    .item-content {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .item-main {
+      display: flex;
+      flex-direction: column;
+    }
+    .activity-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      line-height: 1.2;
+    }
+    .item.checked .activity-name {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+    .time-slot {
+      font-size: 0.72rem;
+      color: #38bdf8;
+      margin-top: 1px;
+      font-weight: 500;
+    }
+    .item.checked .time-slot {
+      color: #64748b;
+    }
+    .duration-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #94a3b8;
+      background: #0f172a;
+      padding: 3px 6px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      white-space: nowrap;
+    }
+    .item.checked .duration-badge {
+      border-color: #064e3b;
+      color: #6ee7b7;
+      background: rgba(6, 78, 59, 0.4);
+    }
+  </style>
 </head>
 <body>
 
-<div class="top">
-  <div class="greeting">Welcome back</div>
-  <div class="title">Your<br><em>Apps</em></div>
-  <div class="subtitle">Everything in one place.</div>
-  <div class="date-row">
-    <span>📅</span>
-    <span id="dateLabel"></span>
+<div class="app-container">
+  <header>
+    <h1>🌅 Morning Routine</h1>
+    <div class="subtitle">6:30 AM – 8:30 AM &bull; 2h 00m Total</div>
+    
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div class="stats-row">
+      <span id="statsText">0 / 16 completed</span>
+      <button class="btn-reset" onclick="resetAll()">Reset Day</button>
+    </div>
+  </header>
+
+  <div class="checklist" id="checklist">
+    <!-- List items populated via JS -->
   </div>
 </div>
 
-<div class="apps-grid">
-
-  <a class="app-card tasks" href="todo-tracker.html">
-    <div class="card-glow"></div>
-    <span class="card-icon">✅</span>
-    <div class="card-label">Productivity</div>
-    <div class="card-name">My Tasks</div>
-    <div class="card-desc">Add, check off, and clear your to-dos. Progress bar updates in real time. Everything saves automatically.</div>
-    <div class="card-arrow">
-      Open Tasks
-      <svg viewBox="0 0 24 24" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </div>
-  </a>
-
-  <a class="app-card workouts" href="workout-tracker.html">
-    <div class="card-glow"></div>
-    <span class="card-icon">🏋️</span>
-    <div class="card-label">Fitness</div>
-    <div class="card-name">Workout Log</div>
-    <div class="card-desc">Track yoga, KB & BB circuits, bench press sets, back training, boxing, and rowing. AM + PM double sessions supported.</div>
-    <div class="card-arrow">
-      Open Workouts
-      <svg viewBox="0 0 24 24" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </div>
-  </a>
-
-</div>
-
-<div class="footer">pradypnair-rgb.github.io/my-apps</div>
-
 <script>
-  document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('en-IN', {
-    weekday: 'long', day: 'numeric', month: 'long'
-  });
+  const routineData = [
+    { time: "6:30 AM", dur: "0 min", title: "Start Alexa" },
+    { time: "6:30 – 6:45 AM", dur: "15 min", title: "Yoga" },
+    { time: "6:45 – 6:55 AM", dur: "10 min", title: "Drink 3 glasses of water" },
+    { time: "6:55 – 7:00 AM", dur: "5 min", title: "Washroom" },
+    { time: "7:00 – 7:05 AM", dur: "5 min", title: "Make tea" },
+    { time: "7:05 – 7:20 AM", dur: "15 min", title: "1 room vacuum" },
+    { time: "7:20 – 7:22 AM", dur: "2 min", title: "Water plants" },
+    { time: "7:22 – 7:27 AM", dur: "5 min", title: "Drink tea" },
+    { time: "7:27 – 7:32 AM", dur: "5 min", title: "Brush" },
+    { time: "7:32 – 7:47 AM", dur: "15 min", title: "Bathe" },
+    { time: "7:47 – 8:02 AM", dur: "15 min", title: "Pooja" },
+    { time: "8:02 – 8:07 AM", dur: "5 min", title: "Whey" },
+    { time: "8:07 – 8:17 AM", dur: "10 min", title: "Smoothie" },
+    { time: "8:17 – 8:22 AM", dur: "5 min", title: "Fruit" },
+    { time: "8:22 – 8:27 AM", dur: "5 min", title: "Fill water bottles" },
+    { time: "8:27 – 8:30 AM", dur: "3 min", title: "Mark attendance" }
+  ];
+
+  const STORAGE_KEY = "morning_routine_state_v2";
+
+  function getSavedState() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch(e) {
+      return {};
+    }
+  }
+
+  function saveState(state) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch(e) {}
+  }
+
+  function renderList() {
+    const listEl = document.getElementById("checklist");
+    listEl.innerHTML = "";
+    const state = getSavedState();
+
+    routineData.forEach((item, index) => {
+      const isChecked = !!state[index];
+      const itemEl = document.createElement("div");
+      itemEl.className = `item ${isChecked ? "checked" : ""}`;
+      itemEl.onclick = () => toggleItem(index);
+
+      itemEl.innerHTML = `
+        <div class="custom-checkbox">
+          <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div class="item-content">
+          <div class="item-main">
+            <span class="activity-name">${item.title}</span>
+            <span class="time-slot">${item.time}</span>
+          </div>
+          <span class="duration-badge">${item.dur}</span>
+        </div>
+      `;
+      listEl.appendChild(itemEl);
+    });
+
+    updateProgress();
+  }
+
+  function toggleItem(index) {
+    const state = getSavedState();
+    state[index] = !state[index];
+    saveState(state);
+    renderList();
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate(25);
+    }
+  }
+
+  function updateProgress() {
+    const state = getSavedState();
+    const checkedCount = Object.values(state).filter(Boolean).length;
+    const total = routineData.length;
+    const pct = Math.round((checkedCount / total) * 100);
+
+    document.getElementById("progressBar").style.width = pct + "%";
+    document.getElementById("statsText").innerText = `${checkedCount} / ${total} completed (${pct}%)`;
+  }
+
+  function resetAll() {
+    if (confirm("Reset today's checklist?")) {
+      saveState({});
+      renderList();
+    }
+  }
+
+  renderList();
 </script>
+
 </body>
 </html>
