@@ -21,6 +21,7 @@
       --p-color: #2563eb;
       --c-color: #d97706;
       --f-color: #059669;
+      --danger: #ef4444;
       --radius: 12px;
       --radius-sm: 8px;
     }
@@ -51,7 +52,6 @@
       gap: 1rem;
     }
 
-    /* Top Segmented Navigation */
     .nav-tabs {
       display: flex;
       background: #e2e8f0;
@@ -79,7 +79,6 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
-    /* Surface Card */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -88,7 +87,6 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
     }
 
-    /* Minimal Date Header */
     .date-strip {
       display: flex;
       justify-content: space-between;
@@ -146,7 +144,6 @@
       cursor: pointer;
     }
 
-    /* Macro Minimal Stat Bar */
     .macro-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -201,7 +198,6 @@
       transition: width 0.3s ease;
     }
 
-    /* Input & Mode Toggle */
     .mode-switch {
       display: flex;
       gap: 0.4rem;
@@ -295,7 +291,6 @@
     .status-msg.error { color: var(--danger); }
     .status-msg.success { color: var(--f-color); }
 
-    /* Feed List */
     .feed-title {
       font-size: 0.8rem;
       font-weight: 600;
@@ -359,7 +354,6 @@
       background: rgba(239, 68, 68, 0.08);
     }
 
-    /* Dashboard Layout */
     .dash-summary {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -469,7 +463,7 @@
         <form id="addFoodForm" class="form-group">
           <div id="autoInputs">
             <div class="input-row-auto">
-              <input type="text" id="autoFoodName" placeholder="e.g. Oats, Banana, Mutton..." autocomplete="off">
+              <input type="text" id="autoFoodName" placeholder="e.g. Methi Thepla, Oats, Banana..." autocomplete="off">
               <input type="number" id="autoFoodQty" placeholder="Qty" value="1" step="any" min="0.1">
               <select id="autoFoodUnit">
                 <option value="item">item / pc</option>
@@ -532,14 +526,31 @@
 
   <script>
     const macroDB = [
+      // Breads, Theplas & Indian Breakfasts (Configured with unit piece weights)
+      { keys: ["thepla", "methi thepla", "theplas", "methi theplas"], p: 3.5, c: 18.0, f: 5.5, isUnit: true, unitName: "thepla", unitWeight: 45 },
+      { keys: ["roti", "chapati", "wheat roti", "phulka", "rotis", "chapatis"], p: 3.2, c: 18.0, f: 0.8, isUnit: true, unitName: "roti", unitWeight: 40 },
+      { keys: ["paratha", "plain paratha"], p: 4.5, c: 30.0, f: 9.0, isUnit: true, unitName: "paratha", unitWeight: 75 },
+      { keys: ["aloo paratha"], p: 4.8, c: 38.0, f: 11.0, isUnit: true, unitName: "paratha", unitWeight: 100 },
+      { keys: ["paneer paratha"], p: 9.5, c: 32.0, f: 13.5, isUnit: true, unitName: "paratha", unitWeight: 110 },
+      { keys: ["idli", "idlis"], p: 2.0, c: 12.0, f: 0.2, isUnit: true, unitName: "idli", unitWeight: 45 },
+      { keys: ["dosa", "plain dosa", "sada dosa"], p: 3.8, c: 28.0, f: 3.5, isUnit: true, unitName: "dosa", unitWeight: 80 },
+      { keys: ["masala dosa"], p: 5.2, c: 42.0, f: 8.5, isUnit: true, unitName: "dosa", unitWeight: 140 },
+      { keys: ["besan chilla", "chilla", "cheela"], p: 7.0, c: 18.0, f: 5.0, isUnit: true, unitName: "chilla", unitWeight: 70 },
+      { keys: ["poha"], p: 2.8, c: 23.0, f: 4.5, isUnit: true, unitName: "bowl (150g)", unitWeight: 150 },
+      { keys: ["upma"], p: 3.2, c: 24.0, f: 5.0, isUnit: true, unitName: "bowl (150g)", unitWeight: 150 },
+
+      // Fruits & Pieces
       { keys: ["banana", "bananas", "kela"], p: 1.3, c: 27.0, f: 0.3, isUnit: true, unitName: "banana", unitWeight: 118 },
       { keys: ["apple", "apples", "seb"], p: 0.5, c: 25.0, f: 0.3, isUnit: true, unitName: "apple", unitWeight: 180 },
       { keys: ["egg", "eggs", "boiled egg", "anda"], p: 6.3, c: 0.6, f: 5.3, isUnit: true, unitName: "egg", unitWeight: 50 },
       { keys: ["egg white", "egg whites"], p: 3.6, c: 0.2, f: 0.1, isUnit: true, unitName: "egg white", unitWeight: 33 },
-      { keys: ["roti", "chapati", "wheat roti", "phulka"], p: 3.2, c: 18.0, f: 0.8, isUnit: true, unitName: "roti", unitWeight: 40 },
+
+      // Protein Powders & Spreads
       { keys: ["whey", "whey protein", "protein powder", "plant protein"], p: 24.0, c: 2.0, f: 1.5, isUnit: true, unitName: "scoop", unitWeight: 30 },
       { keys: ["peanut butter"], p: 4.0, c: 3.2, f: 8.0, isUnit: true, unitName: "tbsp", unitWeight: 16 },
       { keys: ["milk", "whole milk", "toned milk", "cow milk"], p: 3.4, c: 4.8, f: 3.5, isUnit: true, unitName: "glass (200ml)", unitWeight: 200 },
+
+      // Cooked Dishes & Staples (Values calculated per 100g)
       { keys: ["oat", "oats", "rolled oats", "oatmeal"], p: 13.5, c: 68.0, f: 6.5 },
       { keys: ["muesli", "granola"], p: 11.0, c: 66.0, f: 5.5 },
       { keys: ["mutton curry", "mutton gravy", "lamb curry", "goat curry"], p: 16.5, c: 4.5, f: 12.0 },
@@ -547,11 +558,13 @@
       { keys: ["chicken breast"], p: 31.0, c: 0.0, f: 3.6 },
       { keys: ["chicken curry", "chicken gravy"], p: 17.0, c: 4.0, f: 9.0 },
       { keys: ["chicken", "chicken thigh"], p: 27.0, c: 0.0, f: 7.5 },
+      { keys: ["chicken biryani", "biryani"], p: 9.5, c: 25.0, f: 7.0 },
       { keys: ["greek yogurt", "hung curd"], p: 10.0, c: 3.6, f: 0.4 },
       { keys: ["curd", "yogurt", "dahi"], p: 3.5, c: 4.7, f: 3.2 },
       { keys: ["paneer", "cottage cheese"], p: 18.0, c: 3.0, f: 20.0 },
       { keys: ["tofu"], p: 17.0, c: 2.0, f: 9.0 },
       { keys: ["dal", "daal", "lentils", "yellow dal", "moong dal"], p: 6.5, c: 18.0, f: 2.5 },
+      { keys: ["khichdi", "dal khichdi"], p: 4.5, c: 22.0, f: 3.5 },
       { keys: ["chana", "chickpeas", "chole"], p: 8.9, c: 27.0, f: 2.6 },
       { keys: ["rajma", "kidney beans"], p: 8.7, c: 23.0, f: 0.5 },
       { keys: ["soya chunks", "soy chunks", "soya"], p: 52.0, c: 33.0, f: 0.5 },
@@ -806,75 +819,4 @@
         return;
       }
 
-      dayLogs.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'feed-row';
-        li.innerHTML = `
-          <div>
-            <div class="feed-name">${item.name} <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);">(${item.details})</span></div>
-            <div class="feed-tags">
-              <span class="tag-val p">${item.p}g P</span> • 
-              <span class="tag-val c">${item.c}g C</span> • 
-              <span class="tag-val f">${item.f}g F</span> • 
-              <span>${item.cals} kcal</span>
-            </div>
-          </div>
-          <button type="button" class="btn-del" onclick="deleteEntry(${item.id})">&times;</button>
-        `;
-        list.appendChild(li);
-      });
-    }
-
-    function renderDashboard(daysCount) {
-      document.getElementById('dashTitle').textContent = daysCount === 7 ? 'Weekly Total Consumption' : 'Monthly Total Consumption';
-      document.getElementById('dashSubtitle').textContent = `Total intake over the past ${daysCount} days`;
-
-      const chartFeed = document.getElementById('chartFeed');
-      chartFeed.innerHTML = '';
-
-      let totalP = 0, totalC = 0, totalF = 0, totalCals = 0;
-      const today = new Date();
-
-      for (let i = daysCount - 1; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(today.getDate() - i);
-        const dateStr = toISODate(d);
-        const label = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
-
-        const dayLogs = allLogs.filter(item => item.date === dateStr);
-        const p = dayLogs.reduce((acc, item) => acc + (Number(item.p) || 0), 0);
-        const c = dayLogs.reduce((acc, item) => acc + (Number(item.c) || 0), 0);
-        const f = dayLogs.reduce((acc, item) => acc + (Number(item.f) || 0), 0);
-        const cals = dayLogs.reduce((acc, item) => acc + (Number(item.cals) || 0), 0);
-
-        totalP += p; totalC += c; totalF += f; totalCals += cals;
-
-        const macroSum = (p + c + f) || 1;
-        const pPct = (p / macroSum) * 100;
-        const cPct = (c / macroSum) * 100;
-        const fPct = (f / macroSum) * 100;
-
-        const row = document.createElement('div');
-        row.className = 'chart-row';
-        row.innerHTML = `
-          <div class="chart-date">${label}</div>
-          <div class="chart-track" title="P: ${Math.round(p)}g | C: ${Math.round(c)}g | F: ${Math.round(f)}g">
-            <div class="bar-p" style="width: ${p ? pPct : 0}%"></div>
-            <div class="bar-c" style="width: ${c ? cPct : 0}%"></div>
-            <div class="bar-f" style="width: ${f ? fPct : 0}%"></div>
-          </div>
-          <div class="chart-val">${Math.round(p)}g P</div>
-        `;
-        chartFeed.appendChild(row);
-      }
-
-      document.getElementById('totalDashProtein').textContent = `${Math.round(totalP * 10) / 10}g`;
-      document.getElementById('totalDashCarbs').textContent = `${Math.round(totalC * 10) / 10}g`;
-      document.getElementById('totalDashFats').textContent = `${Math.round(totalF * 10) / 10}g`;
-      document.getElementById('totalDashCals').textContent = Math.round(totalCals);
-    }
-
-    syncDateDisplay();
-  </script>
-</body>
-</html>
+      dayLogs.
