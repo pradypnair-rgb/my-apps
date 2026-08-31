@@ -22,9 +22,11 @@
       --transition: all 0.15s ease-in-out;
 
       --color-1: #F97316; /* Orange - Exercise */
-      --color-2: #8B5CF6; /* Purple - Water */
-      --color-3: #10B981; /* Emerald Green - Reading */
-      --color-4: #0EA5E9; /* Cyan */
+      --color-2: #0EA5E9; /* Cyan/Blue - Water */
+      --color-3: #10B981; /* Emerald - Reading */
+      --color-4: #8B5CF6; /* Purple - General */
+      --color-5: #EC4899; /* Pink */
+      --color-6: #EAB308; /* Amber */
     }
 
     * {
@@ -67,23 +69,41 @@
     }
 
     h1 span {
-      color: var(--color-2);
+      color: var(--accent);
     }
 
-    button.export {
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    button.btn-action {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--text);
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.9rem;
       border-radius: 10px;
       font-size: 0.875rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
 
-    button.export:hover {
+    button.btn-action.primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+
+    button.btn-action.primary:hover {
+      background: #2563EB;
+    }
+
+    button.btn-action:hover {
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -109,7 +129,7 @@
       left: 0;
       right: 0;
       height: 6px;
-      background: linear-gradient(90deg, #3B82F6, #8B5CF6, #10B981);
+      background: linear-gradient(90deg, #3B82F6, #8B5CF6, #10B981, #F97316);
     }
 
     .overview-header {
@@ -160,7 +180,7 @@
     }
 
     .ov-value {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: var(--text);
     }
@@ -171,7 +191,7 @@
       font-weight: 500;
     }
 
-    /* Weekly Bar Chart in Overview */
+    /* Weekly Bar Chart */
     .weekly-bars-container {
       display: flex;
       flex-direction: column;
@@ -243,7 +263,7 @@
     .habit-progress-breakdown {
       display: flex;
       flex-direction: column;
-      gap: 0.65rem;
+      gap: 0.75rem;
       padding-top: 0.5rem;
       border-top: 1px solid var(--card-border);
     }
@@ -275,7 +295,14 @@
       transition: width 0.3s ease-out;
     }
 
-    /* Habits Section Title */
+    .habit-prog-sub {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
     .section-title {
       font-size: 0.85rem;
       font-weight: 800;
@@ -313,11 +340,8 @@
       left: 0;
       right: 0;
       height: 6px;
+      background-color: var(--card-accent, #3B82F6);
     }
-
-    .habit-card[data-index="0"]::before { background-color: var(--color-1); }
-    .habit-card[data-index="1"]::before { background-color: var(--color-2); }
-    .habit-card[data-index="2"]::before { background-color: var(--color-3); }
 
     .habit-header {
       display: flex;
@@ -342,15 +366,26 @@
       background: #F1F5F9;
     }
 
+    .habit-title-box {
+      display: flex;
+      flex-direction: column;
+    }
+
     .habit-title {
       font-size: 1.15rem;
       font-weight: 700;
     }
 
+    .habit-target-hint {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
     .header-pills {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.45rem;
     }
 
     .streak-badge {
@@ -381,6 +416,22 @@
       background: #DBEAFE;
     }
 
+    .btn-delete-habit {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.35rem;
+      border-radius: 6px;
+      transition: var(--transition);
+    }
+
+    .btn-delete-habit:hover {
+      color: #EF4444;
+      background: #FEE2E2;
+    }
+
     /* 7-Day Buttons */
     .habit-checkbox-row {
       display: grid;
@@ -389,7 +440,7 @@
     }
 
     .day-check-btn {
-      height: 66px;
+      height: 72px;
       border-radius: 12px;
       border: 1.5px solid var(--card-border);
       background: var(--card-bg);
@@ -398,9 +449,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.2rem;
+      gap: 0.15rem;
       transition: var(--transition);
       outline: none;
+      position: relative;
     }
 
     .day-check-btn * {
@@ -410,10 +462,6 @@
     .day-check-btn:hover {
       border-color: #94A3B8;
       transform: translateY(-2px);
-    }
-
-    .day-check-btn:active {
-      transform: translateY(0px);
     }
 
     .day-label {
@@ -429,6 +477,20 @@
       color: var(--text);
     }
 
+    .day-val-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: #F1F5F9;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      margin-top: 1px;
+      max-width: 90%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .day-check-btn.today {
       border: 2px solid var(--accent);
     }
@@ -440,6 +502,11 @@
 
     .day-check-btn.checked .day-label,
     .day-check-btn.checked .day-date {
+      color: #FFFFFF !important;
+    }
+
+    .day-check-btn.checked .day-val-tag {
+      background: rgba(255, 255, 255, 0.25) !important;
       color: #FFFFFF !important;
     }
 
@@ -465,669 +532,11 @@
       background: var(--success);
     }
 
-    /* Monthly Stats Modal */
+    /* Modal Overlay & Card */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      padding: 1rem;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .modal-card {
-      background: var(--card-bg);
-      border-radius: 24px;
-      width: 100%;
-      max-width: 480px;
-      padding: 1.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .modal-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .modal-close {
-      background: #F1F5F9;
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.65rem;
-    }
-
-    .stat-tile {
-      border-radius: 14px;
-      padding: 0.85rem 0.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      color: #fff;
-    }
-
-    .stat-tile.orange { background: linear-gradient(135deg, #FF7A00, #FF5500); }
-    .stat-tile.blue { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
-    .stat-tile.pink { background: linear-gradient(135deg, #E11D48, #BE123C); }
-
-    .stat-label {
-      font-size: 0.65rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 0.25rem;
-      opacity: 0.9;
-    }
-
-    .stat-val {
-      font-size: 1.4rem;
-      font-weight: 800;
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 0.5rem;
-    }
-
-    .month-nav-btn {
-      background: transparent;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: var(--text);
-      padding: 0.25rem 0.5rem;
-    }
-
-    .month-display {
-      font-size: 1.05rem;
-      font-weight: 700;
-    }
-
-    .calendar-body {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      background: #F8FAFC;
-      border-radius: 16px;
-      padding: 1rem;
-    }
-
-    .cal-weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      text-align: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-
-    .cal-days-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-    }
-
-    .cal-day-cell {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      font-weight: 600;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: var(--transition);
-      color: var(--text);
-      user-select: none;
-    }
-
-    .cal-day-cell.empty {
-      cursor: default;
-    }
-
-    .cal-day-cell:not(.empty):hover {
-      background: #E2E8F0;
-    }
-
-    .cal-day-cell.done {
-      background: #2563EB !important;
-      color: #fff !important;
-      font-weight: 700;
-    }
-
-    .cal-day-cell.today-circle {
-      box-shadow: 0 0 0 2px var(--accent);
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <header>
-      <h1>Habit<span>Box</span></h1>
-      <button class="export" id="export-btn">Export Data</button>
-    </header>
-
-    <!-- Visual Dashboard Overview -->
-    <div class="overview-card" id="overview-card">
-      <div class="overview-header">
-        <div class="overview-title">📊 Habits Performance Overview</div>
-        <div class="overview-month-pill" id="overview-month-tag">Aug 2026</div>
-      </div>
-
-      <!-- Key High Level Metrics -->
-      <div class="overview-stats">
-        <div class="ov-box">
-          <span class="ov-label">This Month Completed</span>
-          <span class="ov-value" id="ov-total-month">0 days</span>
-          <span class="ov-sub" id="ov-month-rate">0% overall consistency</span>
-        </div>
-        <div class="ov-box">
-          <span class="ov-label">Top Habit</span>
-          <span class="ov-value" id="ov-top-habit">—</span>
-          <span class="ov-sub" id="ov-top-habit-stat">0 days done</span>
-        </div>
-      </div>
-
-      <!-- Weekly Habit Activity Graph -->
-      <div class="weekly-bars-container">
-        <div class="weekly-bars-title">
-          <span>7-Day Activity Trend</span>
-          <span id="ov-week-rate">0% this week</span>
-        </div>
-        <div class="weekly-bars" id="overview-weekly-bars"></div>
-      </div>
-
-      <!-- Habit by Habit Progress Bars -->
-      <div class="habit-progress-breakdown" id="overview-habit-breakdown"></div>
-    </div>
-
-    <div class="section-title">Daily Tracker</div>
-    <div class="habit-list" id="habit-list"></div>
-  </div>
-
-  <!-- Monthly Stats Modal -->
-  <div class="modal-overlay" id="stats-modal">
-    <div class="modal-card">
-      <div class="modal-top">
-        <div class="modal-title" id="modal-habit-title">🏃‍♂️ Exercise</div>
-        <button class="modal-close" onclick="closeModal()">✕</button>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-tile orange">
-          <span class="stat-label">Longest Streak</span>
-          <span class="stat-val" id="stat-best-streak">0</span>
-        </div>
-        <div class="stat-tile blue">
-          <span class="stat-label">This Month</span>
-          <span class="stat-val" id="stat-month-count">0</span>
-        </div>
-        <div class="stat-tile pink">
-          <span class="stat-label">Month Rate</span>
-          <span class="stat-val" id="stat-month-rate">0%</span>
-        </div>
-      </div>
-
-      <div class="calendar-header">
-        <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
-        <span class="month-display" id="month-name-display">Month 2026</span>
-        <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
-      </div>
-
-      <div class="calendar-body">
-        <div class="cal-weekdays">
-          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-        </div>
-        <div class="cal-days-grid" id="calendar-days"></div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const default_habits = [
-      { id: '1', name: 'Exercise', icon: '🏃‍♂️', color: '#F97316', history: {} },
-      { id: '2', name: '3 ltrs of water', icon: '💧', color: '#8B5CF6', history: {} },
-      { id: '3', name: 'Reading', icon: '📖', color: '#10B981', history: {} }
-    ];
-
-    let habits = [];
-    try {
-      const stored = localStorage.getItem('habits_box_data');
-      if (stored) habits = JSON.parse(stored);
-    } catch(e) {
-      habits = [];
-    }
-
-    if (!Array.isArray(habits) || habits.length === 0) {
-      habits = JSON.parse(JSON.stringify(default_habits));
-    } else {
-      default_habits.forEach((defHabit, idx) => {
-        const existing = habits.find(h => h.id === defHabit.id || (h.name && h.name.toLowerCase() === defHabit.name.toLowerCase()));
-        if (!existing) {
-          habits.push(JSON.parse(JSON.stringify(defHabit)));
-        } else {
-          if (!existing.color) existing.color = defHabit.color;
-          if (!existing.icon) existing.icon = defHabit.icon;
-        }
-      });
-    }
-
-    let selectedHabitId = null;
-    let viewDate = new Date();
-
-    function saveState() {
-      try {
-        localStorage.setItem('habits_box_data', JSON.stringify(habits));
-      } catch(e) {}
-      render();
-      if (selectedHabitId) renderModal();
-    }
-
-    const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
-    function formatDate(d) {
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
-    }
-
-    function getLast7Days() {
-      const dates = [];
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        dates.push(formatDate(d));
-      }
-      return dates;
-    }
-
-    function getLast30Days() {
-      const dates = [];
-      for (let i = 29; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        dates.push(formatDate(d));
-      }
-      return dates;
-    }
-
-    function calculateStreak(history) {
-      if (!history) return 0;
-      let streak = 0;
-      let d = new Date();
-      let todayStr = formatDate(d);
-
-      if (!history[todayStr]) {
-        d.setDate(d.getDate() - 1);
-      }
-
-      while (true) {
-        const checkStr = formatDate(d);
-        if (history[checkStr]) {
-          streak++;
-          d.setDate(d.getDate() - 1);
-        } else {
-          break;
-        }
-      }
-      return streak;
-    }
-
-    function calculateBestStreak(history) {
-      if (!history) return 0;
-      const sortedDates = Object.keys(history).filter(d => history[d]).sort();
-      if (sortedDates.length === 0) return 0;
-
-      let maxStreak = 1;
-      let currentStreak = 1;
-
-      for (let i = 1; i < sortedDates.length; i++) {
-        const prev = new Date(sortedDates[i - 1]);
-        const curr = new Date(sortedDates[i]);
-        const diffDays = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 1) {
-          currentStreak++;
-          if (currentStreak > maxStreak) maxStreak = currentStreak;
-        } else if (diffDays > 1) {
-          currentStreak = 1;
-        }
-      }
-      return maxStreak;
-    }
-
-    function toggleDate(habitId, dateStr) {
-      const habit = habits.find(h => h.id === habitId);
-      if (habit) {
-        if (!habit.history) habit.history = {};
-        if (habit.history[dateStr]) {
-          delete habit.history[dateStr];
-        } else {
-          habit.history[dateStr] = true;
-        }
-        saveState();
-      }
-    }
-
-    // Render Overview Dashboard
-    function renderOverview() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      document.getElementById('overview-month-tag').innerText = `${monthNames[month]} ${year}`;
-
-      const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-      const totalHabits = habits.length;
-
-      let totalMonthCheckins = 0;
-      let habitMonthStats = [];
-
-      habits.forEach(habit => {
-        let habitCount = 0;
-        for (let day = 1; day <= totalDaysInMonth; day++) {
-          const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-          if (habit.history && habit.history[dStr]) {
-            habitCount++;
-            totalMonthCheckins++;
-          }
-        }
-        habitMonthStats.push({
-          name: habit.name,
-          icon: habit.icon,
-          color: habit.color || '#3B82F6',
-          count: habitCount,
-          rate: Math.round((habitCount / totalDaysInMonth) * 100)
-        });
-      });
-
-      const maxPossibleMonth = totalDaysInMonth * totalHabits;
-      const overallMonthRate = maxPossibleMonth > 0 ? Math.round((totalMonthCheckins / maxPossibleMonth) * 100) : 0;
-
-      document.getElementById('ov-total-month').innerText = `${totalMonthCheckins} check-ins`;
-      document.getElementById('ov-month-rate').innerText = `${overallMonthRate}% month consistency`;
-
-      // Find top habit
-      habitMonthStats.sort((a, b) => b.count - a.count);
-      const topHabit = habitMonthStats[0];
-      if (topHabit && topHabit.count > 0) {
-        document.getElementById('ov-top-habit').innerText = `${topHabit.icon} ${topHabit.name}`;
-        document.getElementById('ov-top-habit-stat').innerText = `${topHabit.count} days completed`;
-      } else {
-        document.getElementById('ov-top-habit').innerText = `None yet`;
-        document.getElementById('ov-top-habit-stat').innerText = `0 days done`;
-      }
-
-      // 7-Day Bar Chart
-      const recent7Days = getLast7Days();
-      const weeklyBarsEl = document.getElementById('overview-weekly-bars');
-      weeklyBarsEl.innerHTML = '';
-
-      let totalWeeklyChecks = 0;
-      const maxPossibleWeek = 7 * totalHabits;
-
-      recent7Days.forEach(dateStr => {
-        const parts = dateStr.split('-');
-        const d = new Date(parts[0], parts[1] - 1, parts[2]);
-        const dayName = weekDays[d.getDay()];
-
-        let dayCount = 0;
-        habits.forEach(h => {
-          if (h.history && h.history[dateStr]) dayCount++;
-        });
-
-        totalWeeklyChecks += dayCount;
-        const fillPercent = totalHabits > 0 ? Math.round((dayCount / totalHabits) * 100) : 0;
-
-        const col = document.createElement('div');
-        col.className = 'bar-col';
-        col.innerHTML = `
-          <span class="bar-count">${dayCount}/${totalHabits}</span>
-          <div class="bar-track">
-            <div class="bar-fill ${fillPercent === 100 ? 'full' : ''}" style="height: ${fillPercent}%;"></div>
-          </div>
-          <span class="bar-day-name">${dayName}</span>
-        `;
-        weeklyBarsEl.appendChild(col);
-      });
-
-      const weekConsistency = maxPossibleWeek > 0 ? Math.round((totalWeeklyChecks / maxPossibleWeek) * 100) : 0;
-      document.getElementById('ov-week-rate').innerText = `${weekConsistency}% weekly consistency`;
-
-      // Habit by Habit Month Progress Bars
-      const breakdownEl = document.getElementById('overview-habit-breakdown');
-      breakdownEl.innerHTML = '';
-
-      habitMonthStats.forEach(item => {
-        const row = document.createElement('div');
-        row.className = 'habit-prog-row';
-        row.innerHTML = `
-          <div class="habit-prog-label">
-            <span>${item.icon} ${escapeHtml(item.name)}</span>
-            <span>${item.count}/${totalDaysInMonth} days (${item.rate}%)</span>
-          </div>
-          <div class="habit-prog-track">
-            <div class="habit-prog-fill" style="width: ${item.rate}%; background-color: ${item.color};"></div>
-          </div>
-        `;
-        breakdownEl.appendChild(row);
-      });
-    }
-
-    // Main App Renderer
-    const habitListEl = document.getElementById('habit-list');
-
-    function render() {
-      renderOverview();
-      habitListEl.innerHTML = '';
-      const recent7Days = getLast7Days();
-      const recent30Days = getLast30Days();
-      const todayStr = formatDate(new Date());
-
-      habits.forEach((habit, index) => {
-        const streak = calculateStreak(habit.history);
-        
-        const card = document.createElement('div');
-        card.className = 'habit-card';
-        card.setAttribute('data-index', index % 3);
-
-        const header = document.createElement('div');
-        header.className = 'habit-header';
-        header.innerHTML = `
-          <div class="habit-meta">
-            <div class="habit-icon">${habit.icon || '🎯'}</div>
-            <div class="habit-title">${escapeHtml(habit.name || 'Habit')}</div>
-          </div>
-          <div class="header-pills">
-            <button class="stats-btn" id="btn-stats-${habit.id}">📊 Stats & Cal</button>
-            <div class="streak-badge">🔥 ${streak}d</div>
-          </div>
-        `;
-
-        const statsBtn = header.querySelector(`#btn-stats-${habit.id}`);
-        statsBtn.addEventListener('click', () => openModal(habit.id));
-
-        const checkRow = document.createElement('div');
-        checkRow.className = 'habit-checkbox-row';
-
-        recent7Days.forEach(dateStr => {
-          const parts = dateStr.split('-');
-          const d = new Date(parts[0], parts[1] - 1, parts[2]);
-          const dayName = weekDays[d.getDay()];
-          const isDone = Boolean(habit.history && habit.history[dateStr]);
-          const isToday = (dateStr === todayStr);
-
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = `day-check-btn ${isDone ? 'checked' : ''} ${isToday ? 'today' : ''}`;
-          btn.innerHTML = `
-            <span class="day-label">${dayName}</span>
-            <span class="day-date">${d.getDate()}</span>
-          `;
-          
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleDate(habit.id, dateStr);
-          });
-
-          checkRow.appendChild(btn);
-        });
-
-        const heatmap = document.createElement('div');
-        heatmap.className = 'heatmap-cells';
-        recent30Days.forEach(dateStr => {
-          const box = document.createElement('div');
-          box.className = `heatmap-box ${habit.history && habit.history[dateStr] ? 'active' : ''}`;
-          box.title = dateStr;
-          
-          box.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleDate(habit.id, dateStr);
-          });
-
-          heatmap.appendChild(box);
-        });
-
-        card.appendChild(header);
-        card.appendChild(checkRow);
-        card.appendChild(heatmap);
-        habitListEl.appendChild(card);
-      });
-    }
-
-    function openModal(habitId) {
-      selectedHabitId = habitId;
-      viewDate = new Date();
-      document.getElementById('stats-modal').classList.add('open');
-      renderModal();
-    }
-
-    function closeModal() {
-      document.getElementById('stats-modal').classList.remove('open');
-      selectedHabitId = null;
-    }
-
-    function changeMonth(delta) {
-      viewDate.setMonth(viewDate.getMonth() + delta);
-      renderModal();
-    }
-
-    function renderModal() {
-      const habit = habits.find(h => h.id === selectedHabitId);
-      if (!habit) return;
-
-      document.getElementById('modal-habit-title').innerHTML = `${habit.icon || '🎯'} ${escapeHtml(habit.name || 'Habit')}`;
-
-      const year = viewDate.getFullYear();
-      const month = viewDate.getMonth();
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      document.getElementById('month-name-display').innerText = `${monthNames[month]} ${year}`;
-
-      const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-      let monthCompleted = 0;
-
-      for (let day = 1; day <= totalDaysInMonth; day++) {
-        const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        if (habit.history && habit.history[dStr]) monthCompleted++;
-      }
-
-      const bestStreak = calculateBestStreak(habit.history);
-      const completionRate = Math.round((monthCompleted / totalDaysInMonth) * 100);
-
-      document.getElementById('stat-best-streak').innerText = `${bestStreak}d`;
-      document.getElementById('stat-month-count').innerText = monthCompleted;
-      document.getElementById('stat-month-rate').innerText = `${completionRate}%`;
-
-      const calendarDaysEl = document.getElementById('calendar-days');
-      calendarDaysEl.innerHTML = '';
-
-      const firstDayIndex = new Date(year, month, 1).getDay();
-      const todayStr = formatDate(new Date());
-
-      for (let i = 0; i < firstDayIndex; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.className = 'cal-day-cell empty';
-        calendarDaysEl.appendChild(emptyCell);
-      }
-
-      for (let day = 1; day <= totalDaysInMonth; day++) {
-        const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const isDone = Boolean(habit.history && habit.history[dStr]);
-        const isToday = (dStr === todayStr);
-
-        const cell = document.createElement('div');
-        cell.className = `cal-day-cell ${isDone ? 'done' : ''} ${isToday ? 'today-circle' : ''}`;
-        cell.innerText = day;
-
-        cell.addEventListener('click', () => {
-          toggleDate(habit.id, dStr);
-        });
-
-        calendarDaysEl.appendChild(cell);
-      }
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    document.getElementById('export-btn').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(habits, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `habitbox-backup-${formatDate(new Date())}.json`;
-      a.click();
-    });
-
-    render();
-  </script>
-</body>
-</html>
+      background: rgba(15, 23, 42
