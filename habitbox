@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HabitBox • Daily Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* --- Clean Light Theme (Day) --- */
+    :root {
+      --bg: #F9FAFB; /* Off-white */
+      --card-bg: #FFFFFF;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+      --card-border: #E5E7EB;
+      --text: #111827; /* Near black */
+      --text-muted: #6B7280;
+      --accent: #2563EB; /* Bright Blue */
+      --accent-hover: #1D4ED8;
+      --success: #10B981; /* Green */
+      --cell-empty: #E5E7EB; /* Light grey cells */
+      --cell-done: #22C55E; /* Bright green done */
+      --radius: 14px;
+      --transition: all 0.2s ease-out;
+
+      /* Habit Specific Colors inspired by the image */
+      --habit-color-1: #F97316; /* Orange */
+      --habit-color-2: #8B5CF6; /* Purple */
+      --habit-color-3: #3B82F6; /* Blue */
+      --habit-color-4: #10B981; /* Green */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1rem;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px; /* Slimmer portrait view */
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    h1 span {
+      color: var(--habit-color-2);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    button.export {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    button.export:hover {
+      border-color: var(--accent);
+      background: #EFF6FF;
+      color: var(--accent);
+    }
+
+    /* Habit List */
+    .habit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Individual Habit Card */
+    .habit-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Color Bar at the top (like image) */
+    .habit-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+    }
+
+    /* Dynamic assignment of top-bar colors */
+    .habit-card[data-index="0"]::before { background-color: var(--habit-color-1); }
+    .habit-card[data-index="1"]::before { background-color: var(--habit-color-2); }
+    .habit-card[data-index="2"]::before { background-color: var(--habit-color-3); }
+    .habit-card[data-index="3"]::before { background-color: var(--habit-color-4); }
+
+    .habit-content {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .habit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .habit-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .habit-icon {
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    /* Dynamic assignment of icon-background colors */
+    .habit-card[data-index="0"] .habit-icon { background-color: #FFF7ED; color: var(--habit-color-1); }
+    .habit-card[data-index="1"] .habit-icon { background-color: #F5F3FF; color: var(--habit-color-2); }
+    .habit-card[data-index="2"] .habit-icon { background-color: #EFF6FF; color: var(--habit-color-3); }
+    .habit-card[data-index="3"] .habit-icon { background-color: #ECFDF5; color: var(--habit-color-4); }
+
+    .habit-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .streak-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background-color: #ECFDF5; /* Soft Green bg */
+      color: var(--success);
+      padding: 0.35rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Checkbox Area (Simplified from previous grid, like image) */
+    .habit-checkbox-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .day-check-btn {
+      flex: 1; /* Equal width columns */
+      height: 60px;
+      border-radius: 10px;
+      border: 1.5px solid var(--card-border);
+      background: var(--card-bg);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      gap: 0.15rem;
+    }
+
+    .day-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .day-date {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* States */
+    .day-check-btn.checked {
+      background-color: var(--success);
+      border-color: var(--success);
+    }
+    .day-check-btn.checked .day-label, 
+    .day-check-btn.checked .day-date { 
+      color: #FFFFFF; 
+    }
+
+    .day-check-btn.today {
+      border-color: var(--accent);
+      background-color: #EFF6FF;
+      border-width: 2px;
+    }
+
+    .heatmap-cells {
+      display: flex;
+      justify-content: space-between;
+      gap: 3px;
+      padding-top: 1rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .heatmap-box {
+      flex: 1; /* Fill width */
+      aspect-ratio: 1; /* keep square */
+      border-radius: 3px;
+      background: var(--cell-empty);
+    }
+
+    .heatmap-box.active {
+      background: var(--cell-done);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-muted);
+      background-color: var(--card-bg);
+      border: 1.5px dashed var(--card-border);
+      border-radius: var(--radius);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Habit<span>Box</span></h1>
+      <div class="header-actions">
+        <button class="export" id="export-btn" title="Backup JSON">Export</button>
+      </div>
+    </header>
+
+    <div class="habit-list" id="habit-list"></div>
+  </div>
+
+  <script>
+    // --- State Management ---
+    // The new structure includes specific Icons.
+    const default_habits = [
+      { id: '1', name: 'Exercise', icon: '🏃‍♂️', history: {} },
+      { id: '2', name: '3 ltrs of water', icon: '💧', history: {} }
+    ];
+
+    let habits = JSON.parse(localStorage.getItem('habits_box_data')) || default_habits;
+
+    function saveState() {
+      localStorage.setItem('habits_box_data', JSON.stringify(habits));
+      render();
+    }
+
+    // --- Date Generation ---
+    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    function getLast7Days() {
+      const dates = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        // ISO string without time
+        dates.push(d.toISOString().split('T')[0]); 
+      }
+      return dates;
+    }
+
+    // Precompute strings for speed
+    const recent7Days = getLast7Days();
+    const recent30Days = (()=>{
+      const dates = [];
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        dates.push(d.toISOString().split('T')[0]);
+      }
+      return dates;
+    })();
+    const todayStr = new Date().toISOString().split('T')[0];
+
+
+    // Streak Calculation
+    function calculateStreak(history) {
+      let streak = 0;
+      let d = new Date();
+      
+      // If today isn't checked, start check from yesterday
+      if (!history[todayStr]) {
+        d.setDate(d.getDate() - 1);
+      }
+
+      while (true) {
+        const dateStr = d.toISOString().split('T')[0];
+        if (history[dateStr]) {
+          streak++;
+          d.setDate(d.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    // --- Render App ---
+    const habitListEl = document.getElementById('habit-list');
+
+    function render() {
+      habitListEl.innerHTML = '';
+
+      if (habits.length === 0) {
+        habitListEl.innerHTML = '<div class="empty-state">Welcome! Your first habits will appear here shortly.</div>';
+        return;
+      }
+
+      habits.forEach((habit, index) => {
+        const streak = calculateStreak(habit.history);
+        
+        const card = document.createElement('div');
+        card.className = 'habit-card';
+        card.setAttribute('data-index', index % 4); // Loop through colors
+
+        // Main content (Title + Streak)
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'habit-content';
+
+        const header = document.createElement('div');
+        header.className = 'habit-header';
+        header.innerHTML = `
+          <div class="habit-meta">
+            <div class="habit-icon">${habit.icon}</div>
+            <div class="habit-title">${escapeHtml(habit.name)}</div>
+          </div>
+          <div class="streak-badge">
+            🔥 ${streak} day${streak === 1 ? '' : 's'}
+          </div>
+        `;
+
+        // Interactive Checkbox Row (Last 7 Days)
+        const checkRow = document.createElement('div');
+        checkRow.className = 'habit-checkbox-row';
+
+        recent7Days.forEach(dateStr => {
+          const d = new Date(dateStr + 'T00:00:00'); // Ensure local date parse
+          const dayName = weekDays[d.getDay()];
+          const isDone = !!habit.history[dateStr];
+          const isToday = dateStr === todayStr;
+
+          const checkBtn = document.createElement('button');
+          checkBtn.className = `day-check-btn ${isDone ? 'checked' : ''} ${isToday ? 'today' : ''}`;
+          checkBtn.innerHTML = `
+            <span class="day-label">${dayName}</span>
+            <span class="day-date">${d.getDate()}</span>
+          `;
+          checkBtn.onclick = () => toggleCheck('${habit.id}', '${dateStr}');
+          
+          checkRow.appendChild(checkBtn);
+        });
+
+        // Small heatmap (Last 30 Days)
+        const heatmap = document.createElement('div');
+        heatmap.className = 'heatmap-cells';
+        recent30Days.forEach(dateStr => {
+          const box = document.createElement('div');
+          box.className = `heatmap-box ${habit.history[dateStr] ? 'active' : ''}`;
+          heatmap.appendChild(box);
+        });
+
+        contentDiv.appendChild(header);
+        contentDiv.appendChild(checkRow);
+        contentDiv.appendChild(heatmap);
+        card.appendChild(contentDiv);
+        habitListEl.appendChild(card);
+      });
+    }
+
+    // --- Actions ---
+    function toggleCheck(id, dateStr) {
+      // Find the habit by id
+      const habit = habits.find(h => h.id === id);
+      if (habit) {
+        if (habit.history[dateStr]) {
+          delete habit.history[dateStr]; // Turn off
+        } else {
+          habit.history[dateStr] = true; // Turn on
+        }
+        saveState();
+      }
+    }
+
+    // Function to simplify addition later
+    window.addHabit = function(name, icon) {
+        habits.push({
+          id: Date.now().toString(),
+          name: name,
+          icon: icon || '✅', // default
+          history: {}
+        });
+        saveState();
+    }
+
+
+    // --- Backup/Export ---
+    document.getElementById('export-btn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(habits, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `habitbox-backup-${todayStr}.json`;
+      a.click();
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
