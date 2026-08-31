@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Macro & Protein Tracker</title>
+  <title>Daily Macro & Protein Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -20,17 +20,17 @@
       --protein-color: #2563eb;
       --carbs-color: #d97706;
       --fats-color: #059669;
-      --danger: #dc2626;
+      --danger: #ef4444;
       --radius-lg: 16px;
       --radius-md: 10px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -39,23 +39,23 @@
       color: var(--text-main);
       display: flex;
       justify-content: center;
-      padding: 1.5rem 1rem 3rem 1rem;
+      padding: 1.25rem 1rem 3rem 1rem;
       min-height: 100vh;
     }
 
     .container {
       width: 100%;
-      max-width: 650px;
+      max-width: 620px;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.2rem;
     }
 
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.25rem 1.5rem;
+      padding: 1.25rem;
       box-shadow: var(--shadow-sm);
     }
 
@@ -63,8 +63,8 @@
       display: flex;
       background: #e2e8f0;
       border-radius: var(--radius-md);
-      padding: 3px;
-      gap: 3px;
+      padding: 4px;
+      gap: 4px;
     }
 
     .view-tab {
@@ -97,28 +97,33 @@
       background: var(--bg);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 0.45rem 0.8rem;
+      padding: 0.5rem 0.9rem;
       border-radius: var(--radius-md);
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
     }
 
+    .date-btn:active {
+      background: #e2e8f0;
+    }
+
     .date-input {
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-main);
       border: 1px solid var(--border);
       background: var(--bg);
-      padding: 0.45rem 0.75rem;
+      padding: 0.5rem 0.75rem;
       border-radius: var(--radius-md);
       outline: none;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      text-align: center;
     }
 
     .macro-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0.6rem;
+      gap: 0.5rem;
       margin-top: 1rem;
     }
 
@@ -126,20 +131,20 @@
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 0.85rem 0.5rem;
+      padding: 0.75rem 0.4rem;
       text-align: center;
     }
 
     .macro-name {
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-size: 0.7rem;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }
 
     .macro-val {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
     }
 
@@ -151,7 +156,7 @@
     .macro-sub {
       font-size: 0.7rem;
       color: var(--text-muted);
-      margin-top: 0.2rem;
+      margin-top: 0.15rem;
     }
 
     .progress-bar-bg {
@@ -179,7 +184,7 @@
 
     .pill-btn {
       flex: 1;
-      padding: 0.45rem 0.5rem;
+      padding: 0.5rem;
       border: 1px solid var(--border);
       background: var(--bg);
       color: var(--text-muted);
@@ -203,10 +208,10 @@
 
     input[type="text"], input[type="number"], input[type="date"] {
       flex: 1;
-      padding: 0.7rem 0.85rem;
+      padding: 0.75rem 0.85rem;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       background: #ffffff;
       color: var(--text-main);
       outline: none;
@@ -222,11 +227,11 @@
       background: var(--primary);
       color: #ffffff;
       border: none;
-      padding: 0.8rem;
-      font-weight: 600;
+      padding: 0.85rem;
+      font-weight: 700;
       border-radius: var(--radius-md);
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       transition: background 0.2s;
     }
 
@@ -234,11 +239,15 @@
       background: var(--primary-hover);
     }
 
+    .btn-submit:active {
+      transform: scale(0.99);
+    }
+
     .status-msg {
       font-size: 0.8rem;
       min-height: 1.2rem;
       margin-top: 0.4rem;
-      font-weight: 500;
+      font-weight: 600;
     }
     .status-msg.info { color: var(--primary); }
     .status-msg.error { color: var(--danger); }
@@ -269,30 +278,31 @@
     }
 
     .item-title {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 600;
       color: var(--text-main);
     }
 
     .item-tags {
       display: flex;
-      gap: 0.4rem;
+      gap: 0.45rem;
       font-size: 0.75rem;
       color: var(--text-muted);
       margin-top: 0.2rem;
     }
 
-    .tag-p { color: var(--protein-color); font-weight: 600; }
-    .tag-c { color: var(--carbs-color); font-weight: 600; }
-    .tag-f { color: var(--fats-color); font-weight: 600; }
+    .tag-p { color: var(--protein-color); font-weight: 700; }
+    .tag-c { color: var(--carbs-color); font-weight: 700; }
+    .tag-f { color: var(--fats-color); font-weight: 700; }
 
     .btn-delete {
       background: transparent;
       border: none;
       color: #94a3b8;
-      font-size: 1.25rem;
+      font-size: 1.4rem;
       cursor: pointer;
-      padding: 0 0.25rem;
+      padding: 0 0.35rem;
+      line-height: 1;
     }
 
     .btn-delete:hover {
@@ -314,7 +324,7 @@
     }
 
     .chart-label {
-      width: 65px;
+      width: 70px;
       font-weight: 600;
       color: var(--text-muted);
     }
@@ -346,7 +356,7 @@
 
     .summary-card {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: repeat(4, 1fr);
       gap: 0.5rem;
       margin-top: 1rem;
       padding: 0.85rem;
@@ -366,12 +376,12 @@
       <button class="view-tab" id="tabMonthly" onclick="switchView('monthly')">Monthly (30 Days)</button>
     </div>
 
-    <div id="dailyView" style="display: flex; flex-direction: column; gap: 1.25rem;">
+    <div id="dailyView" style="display: flex; flex-direction: column; gap: 1.2rem;">
       <div class="card">
         <div class="date-bar">
-          <button type="button" class="date-btn" onclick="shiftDate(-1)">&larr; Prev</button>
-          <input type="date" id="selectedDate" class="date-input" onchange="onDateChange()">
-          <button type="button" class="date-btn" onclick="shiftDate(1)">Next &rarr;</button>
+          <button type="button" class="date-btn" id="btnPrevDay">&larr; Prev</button>
+          <input type="date" id="selectedDate" class="date-input">
+          <button type="button" class="date-btn" id="btnNextDay">Next &rarr;</button>
         </div>
 
         <div class="macro-grid">
@@ -404,21 +414,21 @@
 
       <div class="card">
         <div class="mode-pills">
-          <button type="button" class="pill-btn active" id="btnModeAuto" onclick="setEntryMode('auto')">Smart Auto Lookup</button>
-          <button type="button" class="pill-btn" id="btnModeManual" onclick="setEntryMode('manual')">Manual Macro Entry</button>
+          <button type="button" class="pill-btn active" id="btnModeAuto">Smart Auto Lookup</button>
+          <button type="button" class="pill-btn" id="btnModeManual">Manual Macro Entry</button>
         </div>
 
-        <form id="addFoodForm" onsubmit="handleFoodSubmit(event)">
+        <form id="addFoodForm">
           <div id="autoInputs">
             <div class="form-row">
-              <input type="text" id="autoFoodName" placeholder="e.g. Oats, Mutton Curry, Greek Yogurt, Paneer..." autocomplete="off">
+              <input type="text" id="autoFoodName" placeholder="e.g. Oats, Mutton Curry, Greek Yogurt, Paneer, Chicken..." autocomplete="off">
               <input type="number" id="autoFoodGrams" placeholder="Grams" style="max-width: 110px;" value="100" min="1">
             </div>
           </div>
 
           <div id="manualInputs" style="display: none;">
             <div class="form-row">
-              <input type="text" id="manualName" placeholder="Item Name (e.g. Protein Smoothie)">
+              <input type="text" id="manualName" placeholder="Item Name (e.g. Protein Shake)">
             </div>
             <div class="form-row">
               <input type="number" id="manP" placeholder="Protein (g)" step="0.1" min="0">
@@ -427,7 +437,7 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-submit">+ Log Food</button>
+          <button type="submit" class="btn-submit" id="btnLogFood">+ Log Food</button>
           <div class="status-msg" id="statusMessage"></div>
         </form>
       </div>
@@ -440,7 +450,7 @@
       </div>
     </div>
 
-    <div id="dashboardView" style="display: none; flex-direction: column; gap: 1.25rem;">
+    <div id="dashboardView" style="display: none; flex-direction: column; gap: 1.2rem;">
       <div class="card">
         <h2 id="dashTitle" style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem;">Weekly Overview</h2>
         <div style="font-size: 0.8rem; color: var(--text-muted);" id="dashSubtitle">Average intake over the period</div>
@@ -470,15 +480,321 @@
   </div>
 
   <script>
+    // Master Nutrition DB per 100g (or standard unit)
     const macroDB = [
-      { keys: ["oats", "rolled oats", "oatmeal"], p: 13.5, c: 68.0, f: 6.5 },
-      { keys: ["muesli"], p: 11.0, c: 66.0, f: 5.5 },
-      { keys: ["mutton curry", "mutton gravy", "lamb curry"], p: 16.5, c: 4.5, f: 12.0 },
+      { keys: ["oat", "oats", "rolled oats", "oatmeal"], p: 13.5, c: 68.0, f: 6.5 },
+      { keys: ["muesli", "granola"], p: 11.0, c: 66.0, f: 5.5 },
+      { keys: ["mutton curry", "mutton gravy", "lamb curry", "goat curry"], p: 16.5, c: 4.5, f: 12.0 },
       { keys: ["mutton", "lamb", "goat meat"], p: 25.0, c: 0.0, f: 18.0 },
       { keys: ["chicken breast"], p: 31.0, c: 0.0, f: 3.6 },
       { keys: ["chicken curry", "chicken gravy"], p: 17.0, c: 4.0, f: 9.0 },
-      { keys: ["chicken"], p: 27.0, c: 0.0, f: 7.5 },
-      { keys: ["greek yogurt"], p: 10.0, c: 3.6, f: 0.4 },
+      { keys: ["chicken", "chicken thigh"], p: 27.0, c: 0.0, f: 7.5 },
+      { keys: ["greek yogurt", "hung curd"], p: 10.0, c: 3.6, f: 0.4 },
       { keys: ["curd", "yogurt", "dahi"], p: 3.5, c: 4.7, f: 3.2 },
       { keys: ["paneer", "cottage cheese"], p: 18.0, c: 3.0, f: 20.0 },
-      { keys: ["tofu"], p: 17.0, c: 2.0, f: 9
+      { keys: ["tofu"], p: 17.0, c: 2.0, f: 9.0 },
+      { keys: ["egg white"], p: 11.0, c: 0.7, f: 0.2 },
+      { keys: ["egg", "eggs", "boiled egg"], p: 13.0, c: 1.1, f: 10.5 },
+      { keys: ["peanut butter"], p: 25.0, c: 20.0, f: 50.0 },
+      { keys: ["whey", "whey protein", "protein powder"], p: 80.0, c: 5.0, f: 3.0 },
+      { keys: ["plant protein", "pea protein"], p: 75.0, c: 8.0, f: 4.0 },
+      { keys: ["protein smoothie", "oats smoothie", "smoothie"], p: 12.0, c: 24.0, f: 3.5 },
+      { keys: ["dal", "daal", "lentils", "yellow dal", "moong dal"], p: 6.5, c: 18.0, f: 2.5 },
+      { keys: ["chana", "chickpeas", "chole"], p: 8.9, c: 27.0, f: 2.6 },
+      { keys: ["rajma", "kidney beans"], p: 8.7, c: 23.0, f: 0.5 },
+      { keys: ["soya chunks", "soy chunks", "soya"], p: 52.0, c: 33.0, f: 0.5 },
+      { keys: ["roti", "chapati", "wheat roti"], p: 8.0, c: 45.0, f: 3.0 },
+      { keys: ["rice", "white rice", "cooked rice"], p: 2.7, c: 28.0, f: 0.3 },
+      { keys: ["milk", "whole milk"], p: 3.4, c: 4.8, f: 3.5 },
+      { keys: ["almond", "almonds", "badam"], p: 21.0, c: 22.0, f: 49.0 },
+      { keys: ["chia seed", "chia seeds"], p: 16.5, c: 42.0, f: 30.7 },
+      { keys: ["fish", "salmon", "tilapia"], p: 22.0, c: 0.0, f: 6.0 }
+    ];
+
+    function toISODate(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    let allLogs = JSON.parse(localStorage.getItem('macro_tracker_logs')) || [];
+    let proteinGoal = 120;
+    let currentDate = new Date();
+    let currentMode = 'auto';
+    let currentView = 'daily';
+
+    const dateInput = document.getElementById('selectedDate');
+    const statusEl = document.getElementById('statusMessage');
+
+    function setStatus(msg, type = 'info') {
+      statusEl.textContent = msg;
+      statusEl.className = `status-msg ${type}`;
+      if (type === 'success') {
+        setTimeout(() => { if (statusEl.textContent === msg) statusEl.textContent = ''; }, 3500);
+      }
+    }
+
+    function syncDateDisplay() {
+      dateInput.value = toISODate(currentDate);
+      renderDaily();
+    }
+
+    document.getElementById('btnPrevDay').addEventListener('click', () => {
+      currentDate.setDate(currentDate.getDate() - 1);
+      syncDateDisplay();
+    });
+
+    document.getElementById('btnNextDay').addEventListener('click', () => {
+      currentDate.setDate(currentDate.getDate() + 1);
+      syncDateDisplay();
+    });
+
+    dateInput.addEventListener('change', (e) => {
+      if (e.target.value) {
+        const parts = e.target.value.split('-');
+        currentDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      } else {
+        currentDate = new Date();
+      }
+      syncDateDisplay();
+    });
+
+    document.getElementById('btnModeAuto').addEventListener('click', () => setEntryMode('auto'));
+    document.getElementById('btnModeManual').addEventListener('click', () => setEntryMode('manual'));
+
+    function setEntryMode(mode) {
+      currentMode = mode;
+      document.getElementById('btnModeAuto').classList.toggle('active', mode === 'auto');
+      document.getElementById('btnModeManual').classList.toggle('active', mode === 'manual');
+      document.getElementById('autoInputs').style.display = mode === 'auto' ? 'block' : 'none';
+      document.getElementById('manualInputs').style.display = mode === 'manual' ? 'block' : 'none';
+      setStatus('');
+    }
+
+    function switchView(view) {
+      currentView = view;
+      document.getElementById('tabDaily').classList.toggle('active', view === 'daily');
+      document.getElementById('tabWeekly').classList.toggle('active', view === 'weekly');
+      document.getElementById('tabMonthly').classList.toggle('active', view === 'monthly');
+
+      if (view === 'daily') {
+        document.getElementById('dailyView').style.display = 'flex';
+        document.getElementById('dashboardView').style.display = 'none';
+        renderDaily();
+      } else {
+        document.getElementById('dailyView').style.display = 'none';
+        document.getElementById('dashboardView').style.display = 'flex';
+        renderDashboard(view === 'weekly' ? 7 : 30);
+      }
+    }
+
+    function findInLocalDB(query) {
+      const q = query.toLowerCase().trim();
+      for (const item of macroDB) {
+        if (item.keys.some(k => q === k || q.includes(k) || k.includes(q))) {
+          return item;
+        }
+      }
+      return null;
+    }
+
+    async function queryOpenFoodFacts(query) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=2`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        const data = await res.json();
+        if (data.products && data.products.length > 0) {
+          const p = data.products[0];
+          return {
+            p: parseFloat(p.nutriments?.proteins_100g || 0),
+            c: parseFloat(p.nutriments?.carbohydrates_100g || 0),
+            f: parseFloat(p.nutriments?.fat_100g || 0)
+          };
+        }
+      } catch (err) {
+        // graceful offline fallback
+      }
+      return null;
+    }
+
+    document.getElementById('addFoodForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const activeDateStr = toISODate(currentDate);
+
+      if (currentMode === 'manual') {
+        const name = document.getElementById('manualName').value.trim() || 'Custom Food';
+        const p = parseFloat(document.getElementById('manP').value) || 0;
+        const c = parseFloat(document.getElementById('manC').value) || 0;
+        const f = parseFloat(document.getElementById('manF').value) || 0;
+
+        if (p === 0 && c === 0 && f === 0) {
+          setStatus('Please enter at least one macro amount.', 'error');
+          return;
+        }
+
+        saveEntry(activeDateStr, name, p, c, f, 'Manual Entry');
+        document.getElementById('manualName').value = '';
+        document.getElementById('manP').value = '';
+        document.getElementById('manC').value = '';
+        document.getElementById('manF').value = '';
+        setStatus(`Logged ${name}!`, 'success');
+        return;
+      }
+
+      // Auto Mode
+      const query = document.getElementById('autoFoodName').value.trim();
+      const grams = parseFloat(document.getElementById('autoFoodGrams').value);
+
+      if (!query || isNaN(grams) || grams <= 0) {
+        setStatus('Please enter food name and weight.', 'error');
+        return;
+      }
+
+      const factor = grams / 100;
+      const localMatch = findInLocalDB(query);
+
+      if (localMatch) {
+        saveEntry(activeDateStr, query, localMatch.p * factor, localMatch.c * factor, localMatch.f * factor, `${grams}g`);
+        document.getElementById('autoFoodName').value = '';
+        setStatus(`Logged ${grams}g ${query}!`, 'success');
+        return;
+      }
+
+      setStatus('Searching online database...', 'info');
+      const webMatch = await queryOpenFoodFacts(query);
+
+      if (webMatch) {
+        saveEntry(activeDateStr, query, webMatch.p * factor, webMatch.c * factor, webMatch.f * factor, `${grams}g (Web)`);
+        document.getElementById('autoFoodName').value = '';
+        setStatus(`Logged ${grams}g ${query}!`, 'success');
+      } else {
+        setStatus(`No entry found for "${query}". Switch to Manual Macro Entry.`, 'error');
+      }
+    });
+
+    function saveEntry(dateStr, name, p, c, f, details) {
+      const cals = Math.round((p * 4) + (c * 4) + (f * 9));
+      const entry = {
+        id: Date.now(),
+        date: dateStr,
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        p: Math.round(p * 10) / 10,
+        c: Math.round(c * 10) / 10,
+        f: Math.round(f * 10) / 10,
+        cals: cals,
+        details: details
+      };
+
+      allLogs.unshift(entry);
+      localStorage.setItem('macro_tracker_logs', JSON.stringify(allLogs));
+      renderDaily();
+    }
+
+    window.deleteEntry = function(id) {
+      allLogs = allLogs.filter(item => item.id !== id);
+      localStorage.setItem('macro_tracker_logs', JSON.stringify(allLogs));
+      renderDaily();
+    };
+
+    function renderDaily() {
+      const activeDateStr = toISODate(currentDate);
+      const dayLogs = allLogs.filter(item => item.date === activeDateStr);
+
+      const totalP = Math.round(dayLogs.reduce((acc, i) => acc + (Number(i.p) || 0), 0) * 10) / 10;
+      const totalC = Math.round(dayLogs.reduce((acc, i) => acc + (Number(i.c) || 0), 0) * 10) / 10;
+      const totalF = Math.round(dayLogs.reduce((acc, i) => acc + (Number(i.f) || 0), 0) * 10) / 10;
+      const totalCals = dayLogs.reduce((acc, i) => acc + (Number(i.cals) || 0), 0);
+
+      document.getElementById('dayProtein').textContent = `${totalP}g`;
+      document.getElementById('dayCarbs').textContent = `${totalC}g`;
+      document.getElementById('dayFats').textContent = `${totalF}g`;
+      document.getElementById('dayCalories').textContent = totalCals;
+
+      const pct = Math.min(Math.round((totalP / proteinGoal) * 100), 100);
+      document.getElementById('dayProgressBar').style.width = `${pct}%`;
+
+      const list = document.getElementById('mealsList');
+      list.innerHTML = '';
+
+      if (dayLogs.length === 0) {
+        list.innerHTML = `<li style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1.5rem 0;">No foods logged for this date.</li>`;
+        return;
+      }
+
+      dayLogs.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'feed-item';
+        li.innerHTML = `
+          <div>
+            <div class="item-title">${item.name} <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">(${item.details})</span></div>
+            <div class="item-tags">
+              <span class="tag-p">${item.p}g P</span> • 
+              <span class="tag-c">${item.c}g C</span> • 
+              <span class="tag-f">${item.f}g F</span> • 
+              <span>${item.cals} kcal</span>
+            </div>
+          </div>
+          <button type="button" class="btn-delete" onclick="deleteEntry(${item.id})">&times;</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function renderDashboard(daysCount) {
+      document.getElementById('dashTitle').textContent = daysCount === 7 ? 'Weekly Overview (Last 7 Days)' : 'Monthly Overview (Last 30 Days)';
+      document.getElementById('dashSubtitle').textContent = `Average intake over the past ${daysCount} days`;
+
+      const chartFeed = document.getElementById('chartFeed');
+      chartFeed.innerHTML = '';
+
+      let totalP = 0, totalC = 0, totalF = 0, totalCals = 0;
+      const today = new Date();
+
+      for (let i = daysCount - 1; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const dateStr = toISODate(d);
+        const label = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+        const dayLogs = allLogs.filter(item => item.date === dateStr);
+        const p = dayLogs.reduce((acc, item) => acc + (Number(item.p) || 0), 0);
+        const c = dayLogs.reduce((acc, item) => acc + (Number(item.c) || 0), 0);
+        const f = dayLogs.reduce((acc, item) => acc + (Number(item.f) || 0), 0);
+        const cals = dayLogs.reduce((acc, item) => acc + (Number(item.cals) || 0), 0);
+
+        totalP += p; totalC += c; totalF += f; totalCals += cals;
+
+        const macroSum = (p + c + f) || 1;
+        const pPct = (p / macroSum) * 100;
+        const cPct = (c / macroSum) * 100;
+        const fPct = (f / macroSum) * 100;
+
+        const row = document.createElement('div');
+        row.className = 'chart-bar-row';
+        row.innerHTML = `
+          <div class="chart-label">${label}</div>
+          <div class="chart-bar-track" title="P: ${Math.round(p)}g | C: ${Math.round(c)}g | F: ${Math.round(f)}g">
+            <div class="bar-segment bar-protein" style="width: ${p ? pPct : 0}%"></div>
+            <div class="bar-segment bar-carbs" style="width: ${c ? cPct : 0}%"></div>
+            <div class="bar-segment bar-fats" style="width: ${f ? fPct : 0}%"></div>
+          </div>
+          <div class="chart-val">${Math.round(p)}g P</div>
+        `;
+        chartFeed.appendChild(row);
+      }
+
+      document.getElementById('avgProtein').textContent = `${Math.round(totalP / daysCount)}g`;
+      document.getElementById('avgCarbs').textContent = `${Math.round(totalC / daysCount)}g`;
+      document.getElementById('avgFats').textContent = `${Math.round(totalF / daysCount)}g`;
+      document.getElementById('avgCals').textContent = Math.round(totalCals / daysCount);
+    }
+
+    // Initialize on load
+    syncDateDisplay();
+  </script>
+</body>
+</html>
