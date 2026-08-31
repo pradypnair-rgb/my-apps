@@ -2,288 +2,363 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Daily Protein Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-main: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --primary: #38bdf8;
-      --primary-hover: #0ea5e9;
+      --bg-dark: #090d16;
+      --card-bg: rgba(22, 30, 46, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --danger: #ef4444;
-      --radius: 12px;
+      --danger: #f87171;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background-color: var(--bg-main);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%);
+      background-attachment: fixed;
       color: var(--text-main);
       display: flex;
       justify-content: center;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem 3rem 1rem;
       min-height: 100vh;
+      min-height: 100dvh;
     }
 
     .container {
       width: 100%;
-      max-width: 680px;
+      max-width: 580px;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     .card {
       background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       padding: 1.5rem;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
     }
 
-    header {
+    /* Header & Goal Section */
+    .header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .goal-config {
+    .goal-badge {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.875rem;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
       color: var(--text-muted);
     }
 
-    .goal-config input {
-      width: 70px;
-      padding: 0.3rem 0.5rem;
-      background: var(--bg-main);
-      border: 1px solid var(--card-border);
+    .goal-badge input {
+      width: 50px;
+      background: transparent;
+      border: none;
       color: var(--text-main);
-      border-radius: 6px;
-      font-weight: 600;
-      text-align: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-align: right;
+      outline: none;
     }
 
-    .progress-section {
+    /* Macro Display */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-val {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .metric-val span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Modern Progress Track */
+    .progress-wrapper {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .progress-stats {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-
-    .current-val {
-      font-size: 2.25rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .current-val span {
-      font-size: 1rem;
-      color: var(--text-muted);
-      font-weight: 400;
+      gap: 0.5rem;
     }
 
     .progress-bar-bg {
       width: 100%;
-      height: 14px;
-      background: #334155;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 999px;
       overflow: hidden;
+      position: relative;
     }
 
     .progress-bar-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #38bdf8, #22c55e);
+      background: var(--accent-gradient);
       border-radius: 999px;
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .mode-toggle {
+    .progress-info {
       display: flex;
-      background: var(--bg-main);
-      border-radius: 8px;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Mode Segmented Controls */
+    .tab-control {
+      display: flex;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
       padding: 4px;
       gap: 4px;
       margin-bottom: 1.25rem;
     }
 
-    .mode-btn {
+    .tab-btn {
       flex: 1;
-      padding: 0.5rem;
+      padding: 0.6rem 0.5rem;
       border: none;
       background: transparent;
       color: var(--text-muted);
-      font-weight: 500;
-      font-size: 0.875rem;
-      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
 
-    .mode-btn.active {
-      background: var(--card-bg);
-      color: var(--primary);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    .tab-btn.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
-    form {
+    /* Inputs */
+    .form-row {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
     }
 
-    .form-group {
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    input {
+    input[type="text"], input[type="number"] {
       flex: 1;
-      padding: 0.75rem 1rem;
-      background: var(--bg-main);
+      padding: 0.85rem 1rem;
+      background: rgba(0, 0, 0, 0.3);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
-      color: var(--text-main);
+      border-radius: var(--radius-md);
+      color: #fff;
       font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     input:focus {
-      outline: 2px solid var(--primary);
-      border-color: transparent;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
     }
 
-    .qty-input {
-      max-width: 130px;
+    .qty-box {
+      max-width: 120px;
     }
 
-    button.btn-submit {
-      background: var(--primary);
-      color: #0f172a;
+    .btn-submit {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
       border: none;
-      padding: 0.85rem;
-      font-weight: 600;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
     }
 
-    button.btn-submit:hover {
-      background: var(--primary-hover);
+    .btn-submit:active {
+      transform: scale(0.98);
     }
 
     .status-msg {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      min-height: 1.2rem;
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      min-height: 1rem;
     }
 
-    .history-header {
+    /* History & Log Feed */
+    .feed-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
     }
 
-    .history-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      max-height: 380px;
-      overflow-y: auto;
-    }
-
-    .history-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg-main);
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--card-border);
-    }
-
-    .item-meta {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .item-name {
-      font-weight: 500;
+    .feed-title {
+      font-size: 1rem;
+      font-weight: 700;
       color: var(--text-main);
     }
 
-    .item-sub {
+    .reset-btn {
+      background: none;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .reset-btn:hover {
+      background: rgba(248, 113, 113, 0.1);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .feed-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .feed-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      transition: border-color 0.2s ease;
+    }
+
+    .feed-item:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .item-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .item-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .item-meta {
       font-size: 0.75rem;
       color: var(--text-muted);
     }
 
-    .item-actions {
+    .item-right {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.85rem;
     }
 
-    .item-protein {
-      font-weight: 700;
-      color: var(--primary);
-      font-size: 1.1rem;
+    .item-protein-val {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 1rem;
     }
 
-    .delete-btn {
+    .btn-delete {
       background: none;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 1.2rem;
-      transition: color 0.2s;
+      font-size: 1.15rem;
+      line-height: 1;
+      padding: 0.2rem;
+      transition: color 0.2s ease;
     }
 
-    .delete-btn:hover {
+    .btn-delete:hover {
       color: var(--danger);
     }
 
-    .clear-btn {
-      background: transparent;
-      border: 1px solid var(--card-border);
+    .empty-state {
+      text-align: center;
       color: var(--text-muted);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-
-    .clear-btn:hover {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--danger);
-      border-color: var(--danger);
+      font-size: 0.85rem;
+      padding: 2rem 0;
     }
   </style>
 </head>
@@ -291,58 +366,69 @@
 
   <div class="container">
     <div class="card">
-      <header>
-        <h1>Protein Tracker</h1>
-        <div class="goal-config">
-          <label for="dailyGoal">Daily Target:</label>
+      <div class="header-row">
+        <h1 class="brand-title">Protein Tracker</h1>
+        <div class="goal-badge">
+          <span>Target</span>
           <input type="number" id="dailyGoal" value="120" min="10" max="400">
           <span>g</span>
         </div>
-      </header>
+      </div>
 
-      <div class="progress-section" style="margin-top: 1.5rem;">
-        <div class="progress-stats">
-          <div class="current-val" id="totalDisplay">0.0 <span>g consumed</span></div>
-          <div id="percentageDisplay" style="font-weight: 600; color: var(--text-muted);">0%</div>
+      <div class="metric-grid">
+        <div class="metric-box">
+          <div class="metric-label">Logged</div>
+          <div class="metric-val" id="totalLogged">0.0 <span>g</span></div>
         </div>
+        <div class="metric-box">
+          <div class="metric-label">Remaining</div>
+          <div class="metric-val" id="totalRemaining">120.0 <span>g</span></div>
+        </div>
+      </div>
+
+      <div class="progress-wrapper">
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="progress-info">
+          <span id="percentDisplay">0% Achieved</span>
+          <span id="itemsLoggedCount">0 Items</span>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="btnAutoMode" onclick="setMode('auto')">Auto Lookup</button>
-        <button class="mode-btn" id="btnManualMode" onclick="setMode('manual')">Manual Entry</button>
+      <div class="tab-control">
+        <button class="tab-btn active" id="tabAuto" onclick="setMode('auto')">Smart Lookup</button>
+        <button class="tab-btn" id="tabManual" onclick="setMode('manual')">Manual Input</button>
       </div>
 
       <form id="foodForm" onsubmit="handleLogFood(event)">
         <div id="autoInputs">
-          <div class="form-group">
-            <input type="text" id="foodSearch" placeholder="e.g. Mutton Curry, Muesli, Oats, Chicken..." autocomplete="off">
-            <input type="number" id="foodAmount" class="qty-input" placeholder="Grams" value="100" min="1">
+          <div class="form-row">
+            <input type="text" id="foodSearch" placeholder="e.g. Oats, Mutton Curry, Greek Yogurt..." autocomplete="off">
+            <input type="number" id="foodAmount" class="qty-box" placeholder="Grams" value="100" min="1">
           </div>
         </div>
 
         <div id="manualInputs" style="display: none;">
-          <div class="form-group">
-            <input type="text" id="manualName" placeholder="e.g. Protein Smoothie, Homemade Shake">
-            <input type="number" id="manualProtein" class="qty-input" placeholder="Protein (g)" step="0.1" min="0">
+          <div class="form-row">
+            <input type="text" id="manualName" placeholder="e.g. High Protein Smoothie, Protein Shake">
+            <input type="number" id="manualProtein" class="qty-box" placeholder="Protein (g)" step="0.1" min="0">
           </div>
         </div>
 
         <div class="status-msg" id="statusMessage"></div>
-        <button type="submit" class="btn-submit" id="submitBtn">+ Add to Log</button>
+        <button type="submit" class="btn-submit">+ Log Protein</button>
       </form>
     </div>
 
     <div class="card">
-      <div class="history-header">
-        <h2 style="font-size: 1.15rem; font-weight: 600;">Today's Log</h2>
-        <button class="clear-btn" onclick="clearToday()">Reset Day</button>
+      <div class="feed-header">
+        <div class="feed-title">Today's Meals</div>
+        <button class="reset-btn" onclick="clearToday()">Reset Day</button>
       </div>
-      <ul class="history-list" id="historyList"></ul>
+      <ul class="feed-list" id="feedList"></ul>
     </div>
   </div>
 
@@ -388,8 +474,8 @@
 
     function setMode(mode) {
       currentMode = mode;
-      document.getElementById('btnAutoMode').classList.toggle('active', mode === 'auto');
-      document.getElementById('btnManualMode').classList.toggle('active', mode === 'manual');
+      document.getElementById('tabAuto').classList.toggle('active', mode === 'auto');
+      document.getElementById('tabManual').classList.toggle('active', mode === 'manual');
       document.getElementById('autoInputs').style.display = mode === 'auto' ? 'block' : 'none';
       document.getElementById('manualInputs').style.display = mode === 'manual' ? 'block' : 'none';
       document.getElementById('statusMessage').textContent = '';
@@ -445,31 +531,31 @@
       const grams = parseFloat(document.getElementById('foodAmount').value);
 
       if (!query || isNaN(grams) || grams <= 0) {
-        status.textContent = 'Please enter food name and weight in grams.';
+        status.textContent = 'Please enter food name and grams.';
         return;
       }
 
-      status.textContent = 'Checking nutrition data...';
+      status.textContent = 'Looking up nutrition info...';
 
-      // 1. Check local generic food database first
+      // 1. Local Database lookup
       const localProteinPer100g = findInLocalDB(query);
       if (localProteinPer100g !== null) {
         const calculated = (localProteinPer100g * (grams / 100));
-        addLogEntry(query, calculated, `${grams}g (${localProteinPer100g}g/100g)`);
+        addLogEntry(query, calculated, `${grams}g • ${localProteinPer100g}g/100g`);
         document.getElementById('foodSearch').value = '';
         status.textContent = '';
         return;
       }
 
-      // 2. Query web fallback
+      // 2. Web API lookup
       const webProteinPer100g = await queryOpenFoodFacts(query);
       if (webProteinPer100g !== null) {
         const calculated = (webProteinPer100g * (grams / 100));
-        addLogEntry(query, calculated, `${grams}g (Web: ${webProteinPer100g}g/100g)`);
+        addLogEntry(query, calculated, `${grams}g • Web Data`);
         document.getElementById('foodSearch').value = '';
         status.textContent = '';
       } else {
-        status.textContent = `No exact match for "${query}". Switch to "Manual Entry" to set protein directly.`;
+        status.textContent = `No entry found for "${query}". Use Manual Input.`;
       }
     }
 
@@ -506,31 +592,34 @@
     function render() {
       const totalProtein = logs.reduce((sum, item) => sum + item.protein, 0);
       const roundedTotal = Math.round(totalProtein * 10) / 10;
+      const remaining = Math.max(0, Math.round((dailyGoal - roundedTotal) * 10) / 10);
       const pct = Math.min(Math.round((roundedTotal / dailyGoal) * 100), 100);
 
-      document.getElementById('totalDisplay').innerHTML = `${roundedTotal} <span>/ ${dailyGoal}g</span>`;
-      document.getElementById('percentageDisplay').textContent = `${pct}%`;
+      document.getElementById('totalLogged').innerHTML = `${roundedTotal} <span>g</span>`;
+      document.getElementById('totalRemaining').innerHTML = `${remaining} <span>g</span>`;
+      document.getElementById('percentDisplay').textContent = `${pct}% Achieved`;
+      document.getElementById('itemsLoggedCount').textContent = `${logs.length} ${logs.length === 1 ? 'Item' : 'Items'}`;
       document.getElementById('progressBar').style.width = `${pct}%`;
 
-      const list = document.getElementById('historyList');
+      const list = document.getElementById('feedList');
       list.innerHTML = '';
 
       if (logs.length === 0) {
-        list.innerHTML = `<li style="text-align: center; color: var(--text-muted); padding: 1rem 0; font-size: 0.9rem;">No items logged yet today.</li>`;
+        list.innerHTML = `<li class="empty-state">No meals tracked today yet.</li>`;
         return;
       }
 
       logs.forEach(item => {
         const li = document.createElement('li');
-        li.className = 'history-item';
+        li.className = 'feed-item';
         li.innerHTML = `
-          <div class="item-meta">
-            <span class="item-name">${item.name}</span>
-            <span class="item-sub">${item.details} • ${item.time}</span>
+          <div class="item-left">
+            <span class="item-title">${item.name}</span>
+            <span class="item-meta">${item.details} • ${item.time}</span>
           </div>
-          <div class="item-actions">
-            <span class="item-protein">+${item.protein}g</span>
-            <button class="delete-btn" onclick="removeLog(${item.id})" title="Delete entry">&times;</button>
+          <div class="item-right">
+            <span class="item-protein-val">+${item.protein}g</span>
+            <button class="btn-delete" onclick="removeLog(${item.id})" title="Delete">&times;</button>
           </div>
         `;
         list.appendChild(li);
