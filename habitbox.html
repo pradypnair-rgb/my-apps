@@ -451,6 +451,7 @@
     <div class="habit-list" id="habit-list"></div>
   </div>
 
+  <!-- Monthly Stats Modal -->
   <div class="modal-overlay" id="stats-modal">
     <div class="modal-card">
       <div class="modal-top">
@@ -495,20 +496,34 @@
       { id: '3', name: 'Reading', icon: '📖', history: {} }
     ];
 
-    let habits = JSON.parse(localStorage.getItem('habits_box_data')) || default_habits;
-
-    // Ensure new default habits are merged seamlessly into existing browser data
-    default_habits.forEach(defHabit => {
-      if (!habits.some(h => h.id === defHabit.id || h.name.toLowerCase() === defHabit.name.toLowerCase())) {
-        habits.push(defHabit);
+    let habits = [];
+    try {
+      const stored = localStorage.getItem('habits_box_data');
+      if (stored) {
+        habits = JSON.parse(stored);
       }
-    });
+    } catch(e) {
+      habits = [];
+    }
+
+    if (!Array.isArray(habits) || habits.length === 0) {
+      habits = JSON.parse(JSON.stringify(default_habits));
+    } else {
+      default_habits.forEach(defHabit => {
+        const exists = habits.some(h => h.id === defHabit.id || (h.name && h.name.toLowerCase() === defHabit.name.toLowerCase()));
+        if (!exists) {
+          habits.push(JSON.parse(JSON.stringify(defHabit)));
+        }
+      });
+    }
 
     let selectedHabitId = null;
     let viewDate = new Date();
 
     function saveState() {
-      localStorage.setItem('habits_box_data', JSON.stringify(habits));
+      try {
+        localStorage.setItem('habits_box_data', JSON.stringify(habits));
+      } catch(e) {}
       render();
       if (selectedHabitId) renderModal();
     }
@@ -543,6 +558,7 @@
     }
 
     function calculateStreak(history) {
+      if (!history) return 0;
       let streak = 0;
       let d = new Date();
       let todayStr = formatDate(d);
@@ -564,6 +580,7 @@
     }
 
     function calculateBestStreak(history) {
+      if (!history) return 0;
       const sortedDates = Object.keys(history).filter(d => history[d]).sort();
       if (sortedDates.length === 0) return 0;
 
@@ -588,6 +605,7 @@
     function toggleDate(habitId, dateStr) {
       const habit = habits.find(h => h.id === habitId);
       if (habit) {
+        if (!habit.history) habit.history = {};
         if (habit.history[dateStr]) {
           delete habit.history[dateStr];
         } else {
@@ -612,21 +630,22 @@
         card.className = 'habit-card';
         card.setAttribute('data-index', index % 3);
 
-        // Header
         const header = document.createElement('div');
         header.className = 'habit-header';
         header.innerHTML = `
           <div class="habit-meta">
-            <div class="habit-icon">${habit.icon}</div>
-            <div class="habit-title">${escapeHtml(habit.name)}</div>
+            <div class="habit-icon">${habit.icon || '🎯'}</div>
+            <div class="habit-title">${escapeHtml(habit.name || 'Habit')}</div>
           </div>
           <div class="header-pills">
-            <button class="stats-btn" onclick="openModal('${habit.id}')">📊 Stats & Cal</button>
+            <button class="stats-btn" id="btn-stats-${habit.id}">📊 Stats & Cal</button>
             <div class="streak-badge">🔥 ${streak}d</div>
           </div>
         `;
 
-        // 7-Day Buttons
+        const statsBtn = header.querySelector(`#btn-stats-${habit.id}`);
+        statsBtn.addEventListener('click', () => openModal(habit.id));
+
         const checkRow = document.createElement('div');
         checkRow.className = 'habit-checkbox-row';
 
@@ -634,7 +653,7 @@
           const parts = dateStr.split('-');
           const d = new Date(parts[0], parts[1] - 1, parts[2]);
           const dayName = weekDays[d.getDay()];
-          const isDone = Boolean(habit.history[dateStr]);
+          const isDone = Boolean(habit.history && habit.history[dateStr]);
           const isToday = (dateStr === todayStr);
 
           const btn = document.createElement('button');
@@ -653,12 +672,11 @@
           checkRow.appendChild(btn);
         });
 
-        // 30-Day Heatmap
         const heatmap = document.createElement('div');
         heatmap.className = 'heatmap-cells';
         recent30Days.forEach(dateStr => {
           const box = document.createElement('div');
-          box.className = `heatmap-box ${habit.history[dateStr] ? 'active' : ''}`;
+          box.className = `heatmap-box ${habit.history && habit.history[dateStr] ? 'active' : ''}`;
           box.title = dateStr;
           
           box.addEventListener('click', (e) => {
@@ -697,7 +715,7 @@
       const habit = habits.find(h => h.id === selectedHabitId);
       if (!habit) return;
 
-      document.getElementById('modal-habit-title').innerHTML = `${habit.icon} ${escapeHtml(habit.name)}`;
+      document.getElementById('modal-habit-title').innerHTML = `${habit.icon || '🎯'} ${escapeHtml(habit.name || 'Habit')}`;
 
       const year = viewDate.getFullYear();
       const month = viewDate.getMonth();
@@ -709,7 +727,7 @@
 
       for (let day = 1; day <= totalDaysInMonth; day++) {
         const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        if (habit.history[dStr]) monthCompleted++;
+        if (habit.history && habit.history[dStr]) monthCompleted++;
       }
 
       const bestStreak = calculateBestStreak(habit.history);
@@ -733,7 +751,7 @@
 
       for (let day = 1; day <= totalDaysInMonth; day++) {
         const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const isDone = Boolean(habit.history[dStr]);
+        const isDone = Boolean(habit.history && habit.history[dStr]);
         const isToday = (dStr === todayStr);
 
         const cell = document.createElement('div');
@@ -763,6 +781,9 @@
       a.click();
     });
 
+    document.addEventListener('DOMContentLoaded', () => {
+      render();
+    });
     render();
   </script>
 </body>
