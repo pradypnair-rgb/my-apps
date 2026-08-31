@@ -50,7 +50,7 @@
       max-width: 620px;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
 
     header {
@@ -88,6 +88,205 @@
       color: var(--accent);
     }
 
+    /* Overall Summary Dashboard */
+    .overview-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .overview-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #3B82F6, #8B5CF6, #10B981);
+    }
+
+    .overview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .overview-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .overview-month-pill {
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #EFF6FF;
+      color: var(--accent);
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+    }
+
+    .overview-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .ov-box {
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .ov-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    .ov-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .ov-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Weekly Bar Chart in Overview */
+    .weekly-bars-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .weekly-bars-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .weekly-bars {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.45rem;
+      align-items: end;
+      height: 90px;
+      padding-top: 0.5rem;
+    }
+
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      gap: 0.3rem;
+    }
+
+    .bar-track {
+      width: 100%;
+      background: #F1F5F9;
+      border-radius: 6px;
+      height: 55px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 6px;
+      transition: height 0.3s ease-out;
+    }
+
+    .bar-fill.full {
+      background: var(--success);
+    }
+
+    .bar-day-name {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .bar-count {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Habit Breakdown List */
+    .habit-progress-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .habit-prog-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .habit-prog-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .habit-prog-track {
+      width: 100%;
+      height: 8px;
+      background: #F1F5F9;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .habit-prog-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease-out;
+    }
+
+    /* Habits Section Title */
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      padding-left: 0.25rem;
+    }
+
+    /* Habit Cards */
     .habit-list {
       display: flex;
       flex-direction: column;
@@ -211,6 +410,10 @@
     .day-check-btn:hover {
       border-color: #94A3B8;
       transform: translateY(-2px);
+    }
+
+    .day-check-btn:active {
+      transform: translateY(0px);
     }
 
     .day-label {
@@ -448,6 +651,41 @@
       <button class="export" id="export-btn">Export Data</button>
     </header>
 
+    <!-- Visual Dashboard Overview -->
+    <div class="overview-card" id="overview-card">
+      <div class="overview-header">
+        <div class="overview-title">📊 Habits Performance Overview</div>
+        <div class="overview-month-pill" id="overview-month-tag">Aug 2026</div>
+      </div>
+
+      <!-- Key High Level Metrics -->
+      <div class="overview-stats">
+        <div class="ov-box">
+          <span class="ov-label">This Month Completed</span>
+          <span class="ov-value" id="ov-total-month">0 days</span>
+          <span class="ov-sub" id="ov-month-rate">0% overall consistency</span>
+        </div>
+        <div class="ov-box">
+          <span class="ov-label">Top Habit</span>
+          <span class="ov-value" id="ov-top-habit">—</span>
+          <span class="ov-sub" id="ov-top-habit-stat">0 days done</span>
+        </div>
+      </div>
+
+      <!-- Weekly Habit Activity Graph -->
+      <div class="weekly-bars-container">
+        <div class="weekly-bars-title">
+          <span>7-Day Activity Trend</span>
+          <span id="ov-week-rate">0% this week</span>
+        </div>
+        <div class="weekly-bars" id="overview-weekly-bars"></div>
+      </div>
+
+      <!-- Habit by Habit Progress Bars -->
+      <div class="habit-progress-breakdown" id="overview-habit-breakdown"></div>
+    </div>
+
+    <div class="section-title">Daily Tracker</div>
     <div class="habit-list" id="habit-list"></div>
   </div>
 
@@ -491,17 +729,15 @@
 
   <script>
     const default_habits = [
-      { id: '1', name: 'Exercise', icon: '🏃‍♂️', history: {} },
-      { id: '2', name: '3 ltrs of water', icon: '💧', history: {} },
-      { id: '3', name: 'Reading', icon: '📖', history: {} }
+      { id: '1', name: 'Exercise', icon: '🏃‍♂️', color: '#F97316', history: {} },
+      { id: '2', name: '3 ltrs of water', icon: '💧', color: '#8B5CF6', history: {} },
+      { id: '3', name: 'Reading', icon: '📖', color: '#10B981', history: {} }
     ];
 
     let habits = [];
     try {
       const stored = localStorage.getItem('habits_box_data');
-      if (stored) {
-        habits = JSON.parse(stored);
-      }
+      if (stored) habits = JSON.parse(stored);
     } catch(e) {
       habits = [];
     }
@@ -509,10 +745,13 @@
     if (!Array.isArray(habits) || habits.length === 0) {
       habits = JSON.parse(JSON.stringify(default_habits));
     } else {
-      default_habits.forEach(defHabit => {
-        const exists = habits.some(h => h.id === defHabit.id || (h.name && h.name.toLowerCase() === defHabit.name.toLowerCase()));
-        if (!exists) {
+      default_habits.forEach((defHabit, idx) => {
+        const existing = habits.find(h => h.id === defHabit.id || (h.name && h.name.toLowerCase() === defHabit.name.toLowerCase()));
+        if (!existing) {
           habits.push(JSON.parse(JSON.stringify(defHabit)));
+        } else {
+          if (!existing.color) existing.color = defHabit.color;
+          if (!existing.icon) existing.icon = defHabit.icon;
         }
       });
     }
@@ -615,9 +854,116 @@
       }
     }
 
+    // Render Overview Dashboard
+    function renderOverview() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      document.getElementById('overview-month-tag').innerText = `${monthNames[month]} ${year}`;
+
+      const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+      const totalHabits = habits.length;
+
+      let totalMonthCheckins = 0;
+      let habitMonthStats = [];
+
+      habits.forEach(habit => {
+        let habitCount = 0;
+        for (let day = 1; day <= totalDaysInMonth; day++) {
+          const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          if (habit.history && habit.history[dStr]) {
+            habitCount++;
+            totalMonthCheckins++;
+          }
+        }
+        habitMonthStats.push({
+          name: habit.name,
+          icon: habit.icon,
+          color: habit.color || '#3B82F6',
+          count: habitCount,
+          rate: Math.round((habitCount / totalDaysInMonth) * 100)
+        });
+      });
+
+      const maxPossibleMonth = totalDaysInMonth * totalHabits;
+      const overallMonthRate = maxPossibleMonth > 0 ? Math.round((totalMonthCheckins / maxPossibleMonth) * 100) : 0;
+
+      document.getElementById('ov-total-month').innerText = `${totalMonthCheckins} check-ins`;
+      document.getElementById('ov-month-rate').innerText = `${overallMonthRate}% month consistency`;
+
+      // Find top habit
+      habitMonthStats.sort((a, b) => b.count - a.count);
+      const topHabit = habitMonthStats[0];
+      if (topHabit && topHabit.count > 0) {
+        document.getElementById('ov-top-habit').innerText = `${topHabit.icon} ${topHabit.name}`;
+        document.getElementById('ov-top-habit-stat').innerText = `${topHabit.count} days completed`;
+      } else {
+        document.getElementById('ov-top-habit').innerText = `None yet`;
+        document.getElementById('ov-top-habit-stat').innerText = `0 days done`;
+      }
+
+      // 7-Day Bar Chart
+      const recent7Days = getLast7Days();
+      const weeklyBarsEl = document.getElementById('overview-weekly-bars');
+      weeklyBarsEl.innerHTML = '';
+
+      let totalWeeklyChecks = 0;
+      const maxPossibleWeek = 7 * totalHabits;
+
+      recent7Days.forEach(dateStr => {
+        const parts = dateStr.split('-');
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        const dayName = weekDays[d.getDay()];
+
+        let dayCount = 0;
+        habits.forEach(h => {
+          if (h.history && h.history[dateStr]) dayCount++;
+        });
+
+        totalWeeklyChecks += dayCount;
+        const fillPercent = totalHabits > 0 ? Math.round((dayCount / totalHabits) * 100) : 0;
+
+        const col = document.createElement('div');
+        col.className = 'bar-col';
+        col.innerHTML = `
+          <span class="bar-count">${dayCount}/${totalHabits}</span>
+          <div class="bar-track">
+            <div class="bar-fill ${fillPercent === 100 ? 'full' : ''}" style="height: ${fillPercent}%;"></div>
+          </div>
+          <span class="bar-day-name">${dayName}</span>
+        `;
+        weeklyBarsEl.appendChild(col);
+      });
+
+      const weekConsistency = maxPossibleWeek > 0 ? Math.round((totalWeeklyChecks / maxPossibleWeek) * 100) : 0;
+      document.getElementById('ov-week-rate').innerText = `${weekConsistency}% weekly consistency`;
+
+      // Habit by Habit Month Progress Bars
+      const breakdownEl = document.getElementById('overview-habit-breakdown');
+      breakdownEl.innerHTML = '';
+
+      habitMonthStats.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'habit-prog-row';
+        row.innerHTML = `
+          <div class="habit-prog-label">
+            <span>${item.icon} ${escapeHtml(item.name)}</span>
+            <span>${item.count}/${totalDaysInMonth} days (${item.rate}%)</span>
+          </div>
+          <div class="habit-prog-track">
+            <div class="habit-prog-fill" style="width: ${item.rate}%; background-color: ${item.color};"></div>
+          </div>
+        `;
+        breakdownEl.appendChild(row);
+      });
+    }
+
+    // Main App Renderer
     const habitListEl = document.getElementById('habit-list');
 
     function render() {
+      renderOverview();
       habitListEl.innerHTML = '';
       const recent7Days = getLast7Days();
       const recent30Days = getLast30Days();
@@ -781,9 +1127,6 @@
       a.click();
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      render();
-    });
     render();
   </script>
 </body>
