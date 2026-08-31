@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>HabitBox • Daily Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,31 +11,33 @@
     :root {
       --bg: #F8FAFC;
       --card-bg: #FFFFFF;
-      --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
       --card-border: #E2E8F0;
       --text: #0F172A;
       --text-muted: #64748B;
-      --accent: #3B82F6;
+      --accent: #2563EB;
       --success: #10B981;
-      --partial: #F59E0B; /* Amber for partial progress */
+      --partial: #F59E0B;
       --cell-empty: #E2E8F0;
       --radius: 16px;
       --transition: all 0.15s ease-in-out;
 
-      --color-1: #F97316; /* Orange - Exercise */
-      --color-2: #0EA5E9; /* Cyan/Blue - Water */
-      --color-3: #10B981; /* Emerald - Reading */
-      --color-4: #8B5CF6; /* Purple - General */
-      --color-5: #EC4899; /* Pink */
-      --color-6: #EAB308; /* Amber */
+      --color-1: #EA580C; /* Vibrant Orange */
+      --color-2: #0284C7; /* Sky Blue */
+      --color-3: #059669; /* Emerald */
+      --color-4: #7C3AED; /* Purple */
+      --color-5: #DB2777; /* Pink */
+      --color-6: #D97706; /* Amber */
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     body {
@@ -45,15 +47,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
+      padding: 1.25rem 0.75rem 2.5rem 0.75rem;
+      overflow-x: hidden;
     }
 
     .container {
       width: 100%;
-      max-width: 620px;
+      max-width: 580px;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     header {
@@ -64,9 +67,9 @@
     }
 
     h1 {
-      font-size: 1.85rem;
+      font-size: 1.65rem;
       font-weight: 800;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
     }
 
     h1 span {
@@ -75,23 +78,24 @@
 
     .header-actions {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     button.btn-action {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--text);
-      padding: 0.5rem 0.9rem;
+      padding: 0.45rem 0.75rem;
       border-radius: 10px;
-      font-size: 0.875rem;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       transition: var(--transition);
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.25rem;
+      white-space: nowrap;
     }
 
     button.btn-action.primary {
@@ -101,7 +105,7 @@
     }
 
     button.btn-action.primary:hover {
-      background: #2563EB;
+      background: #1D4ED8;
     }
 
     button.btn-action:hover {
@@ -115,10 +119,10 @@
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
       box-shadow: var(--card-shadow);
-      padding: 1.25rem;
+      padding: 1.15rem;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.15rem;
       position: relative;
       overflow: hidden;
     }
@@ -129,93 +133,106 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 6px;
-      background: linear-gradient(90deg, #3B82F6, #8B5CF6, #10B981, #F97316);
+      height: 5px;
+      background: linear-gradient(90deg, #2563EB, #7C3AED, #059669, #EA580C);
     }
 
     .overview-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 0.5rem;
     }
 
     .overview-title {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 800;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
     }
 
     .overview-month-pill {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
       background: #EFF6FF;
       color: var(--accent);
-      padding: 0.25rem 0.6rem;
+      padding: 0.2rem 0.55rem;
       border-radius: 20px;
+      white-space: nowrap;
     }
 
     .overview-stats {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
     }
 
     .ov-box {
       background: #F8FAFC;
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 0.85rem;
+      padding: 0.75rem;
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.2rem;
+      min-width: 0;
     }
 
     .ov-label {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 700;
       text-transform: uppercase;
       color: var(--text-muted);
       letter-spacing: 0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .ov-value {
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       font-weight: 800;
       color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .ov-sub {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
-      font-weight: 500;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Weekly Bar Chart */
     .weekly-bars-container {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .weekly-bars-title {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.3px;
       display: flex;
       justify-content: space-between;
+      gap: 0.5rem;
     }
 
     .weekly-bars {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 0.45rem;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 0.35rem;
       align-items: end;
-      height: 90px;
-      padding-top: 0.5rem;
+      height: 85px;
+      padding-top: 0.35rem;
     }
 
     .bar-col {
@@ -224,14 +241,16 @@
       align-items: center;
       height: 100%;
       justify-content: flex-end;
-      gap: 0.3rem;
+      gap: 0.25rem;
+      min-width: 0;
     }
 
     .bar-track {
       width: 100%;
+      max-width: 32px;
       background: #F1F5F9;
       border-radius: 6px;
-      height: 55px;
+      height: 50px;
       display: flex;
       align-items: flex-end;
       overflow: hidden;
@@ -249,13 +268,13 @@
     }
 
     .bar-day-name {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 700;
       color: var(--text-muted);
     }
 
     .bar-count {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 700;
       color: var(--text);
     }
@@ -264,7 +283,7 @@
     .habit-progress-breakdown {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.65rem;
       padding-top: 0.5rem;
       border-top: 1px solid var(--card-border);
     }
@@ -272,19 +291,19 @@
     .habit-prog-row {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.2rem;
     }
 
     .habit-prog-label {
       display: flex;
       justify-content: space-between;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
     }
 
     .habit-prog-track {
       width: 100%;
-      height: 8px;
+      height: 7px;
       background: #F1F5F9;
       border-radius: 999px;
       overflow: hidden;
@@ -299,26 +318,26 @@
     .habit-prog-sub {
       display: flex;
       justify-content: space-between;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--text-muted);
       font-weight: 600;
     }
 
     .section-title {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--text-muted);
-      margin-top: 0.5rem;
-      padding-left: 0.25rem;
+      margin-top: 0.25rem;
+      padding-left: 0.2rem;
     }
 
     /* Habit Cards */
     .habit-list {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.15rem;
     }
 
     .habit-card {
@@ -328,10 +347,10 @@
       box-shadow: var(--card-shadow);
       position: relative;
       overflow: hidden;
-      padding: 1.25rem;
+      padding: 1.15rem;
       display: flex;
       flex-direction: column;
-      gap: 1.1rem;
+      gap: 1rem;
     }
 
     .habit-card::before {
@@ -340,29 +359,32 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 6px;
-      background-color: var(--card-accent, #3B82F6);
+      height: 5px;
+      background-color: var(--card-accent, #2563EB);
     }
 
     .habit-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 0.5rem;
     }
 
     .habit-meta {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
+      min-width: 0;
     }
 
     .habit-icon {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
       border-radius: 10px;
       background: #F1F5F9;
     }
@@ -370,15 +392,19 @@
     .habit-title-box {
       display: flex;
       flex-direction: column;
+      min-width: 0;
     }
 
     .habit-title {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .habit-target-hint {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 600;
       color: var(--text-muted);
     }
@@ -386,31 +412,34 @@
     .header-pills {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.35rem;
+      flex-shrink: 0;
     }
 
     .streak-badge {
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.25rem;
       background-color: #ECFDF5;
       color: #059669;
-      padding: 0.35rem 0.65rem;
+      padding: 0.3rem 0.55rem;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
+      white-space: nowrap;
     }
 
     .stats-btn {
       background: #F1F5F9;
       border: none;
-      padding: 0.35rem 0.65rem;
+      padding: 0.3rem 0.55rem;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--accent);
       cursor: pointer;
       transition: var(--transition);
+      white-space: nowrap;
     }
 
     .stats-btn:hover {
@@ -422,8 +451,8 @@
       border: none;
       color: #94A3B8;
       cursor: pointer;
-      font-size: 0.9rem;
-      padding: 0.35rem;
+      font-size: 0.85rem;
+      padding: 0.25rem;
       border-radius: 6px;
       transition: var(--transition);
     }
@@ -433,16 +462,18 @@
       background: #FEE2E2;
     }
 
-    /* 7-Day Buttons */
+    /* 7-Day Buttons Grid: Strict minmax(0, 1fr) to prevent Chrome overflow */
     .habit-checkbox-row {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 0.5rem;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 0.35rem;
+      width: 100%;
     }
 
     .day-check-btn {
-      height: 76px;
-      border-radius: 12px;
+      min-width: 0;
+      height: 70px;
+      border-radius: 10px;
       border: 1.5px solid var(--card-border);
       background: var(--card-bg);
       cursor: pointer;
@@ -450,11 +481,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.15rem;
+      gap: 0.1rem;
       transition: var(--transition);
       outline: none;
       position: relative;
       overflow: hidden;
+      padding: 0.15rem 0.1rem;
     }
 
     .day-check-btn * {
@@ -463,34 +495,36 @@
 
     .day-check-btn:hover {
       border-color: #94A3B8;
-      transform: translateY(-2px);
     }
 
     .day-label {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 700;
       text-transform: uppercase;
       color: var(--text-muted);
+      line-height: 1;
     }
 
     .day-date {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--text);
+      line-height: 1.1;
     }
 
     .day-val-tag {
-      font-size: 0.62rem;
+      font-size: 0.58rem;
       font-weight: 700;
       color: var(--text-muted);
       background: #F1F5F9;
-      padding: 0.1rem 0.35rem;
+      padding: 0.05rem 0.25rem;
       border-radius: 4px;
       margin-top: 1px;
-      max-width: 90%;
+      max-width: 95%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      line-height: 1.2;
     }
 
     .day-check-btn.today {
@@ -529,20 +563,18 @@
       color: #FFFFFF !important;
     }
 
-    /* Target Progress Mini-Meter on the bottom of card */
     .day-meter-track {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 4px;
+      height: 3px;
       background: #E2E8F0;
     }
 
     .day-meter-fill {
       height: 100%;
       background: var(--success);
-      transition: width 0.2s ease;
     }
 
     .day-check-btn.partial .day-meter-fill {
@@ -557,18 +589,18 @@
     .heatmap-cells {
       display: flex;
       justify-content: space-between;
-      gap: 4px;
-      padding-top: 0.75rem;
+      gap: 3px;
+      padding-top: 0.65rem;
       border-top: 1px solid var(--card-border);
     }
 
     .heatmap-box {
       flex: 1;
       aspect-ratio: 1;
-      border-radius: 3px;
+      border-radius: 2.5px;
       background: var(--cell-empty);
       cursor: pointer;
-      transition: var(--transition);
+      min-width: 0;
     }
 
     .heatmap-box.completed {
@@ -579,19 +611,18 @@
       background: var(--partial);
     }
 
-    /* Modal Styles (General) */
+    /* Modal Styles */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.65);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 100;
+      z-index: 1000;
       padding: 1rem;
     }
 
@@ -601,20 +632,16 @@
 
     .modal-card {
       background: var(--card-bg);
-      border-radius: 24px;
+      border-radius: 20px;
       width: 100%;
-      max-width: 480px;
-      padding: 1.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-width: 440px;
+      padding: 1.25rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      gap: 1.1rem;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .modal-top {
@@ -624,20 +651,20 @@
     }
 
     .modal-title {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 800;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .modal-close {
       background: #F1F5F9;
       border: none;
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -648,12 +675,12 @@
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.65rem;
+      gap: 0.5rem;
     }
 
     .stat-tile {
-      border-radius: 14px;
-      padding: 0.85rem 0.5rem;
+      border-radius: 12px;
+      padding: 0.75rem 0.35rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -661,21 +688,21 @@
       color: #fff;
     }
 
-    .stat-tile.orange { background: linear-gradient(135deg, #FF7A00, #FF5500); }
-    .stat-tile.blue { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
-    .stat-tile.pink { background: linear-gradient(135deg, #E11D48, #BE123C); }
+    .stat-tile.orange { background: #EA580C; }
+    .stat-tile.blue { background: #2563EB; }
+    .stat-tile.pink { background: #E11D48; }
 
     .stat-label {
-      font-size: 0.65rem;
+      font-size: 0.58rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 0.25rem;
-      opacity: 0.9;
+      letter-spacing: 0.3px;
+      margin-bottom: 0.15rem;
+      opacity: 0.95;
     }
 
     .stat-val {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 800;
     }
 
@@ -683,45 +710,45 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 0.5rem;
+      padding: 0 0.25rem;
     }
 
     .month-nav-btn {
       background: transparent;
       border: none;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       cursor: pointer;
       color: var(--text);
-      padding: 0.25rem 0.5rem;
+      padding: 0.2rem 0.5rem;
     }
 
     .month-display {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
     }
 
     .calendar-body {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.35rem;
       background: #F8FAFC;
-      border-radius: 16px;
-      padding: 1rem;
+      border-radius: 14px;
+      padding: 0.75rem;
     }
 
     .cal-weekdays {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       text-align: center;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 700;
       color: var(--text-muted);
     }
 
     .cal-days-grid {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 3px;
     }
 
     .cal-day-cell {
@@ -730,14 +757,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       border-radius: 50%;
       cursor: pointer;
-      transition: var(--transition);
       color: var(--text);
       user-select: none;
-      position: relative;
     }
 
     .cal-day-cell.empty {
@@ -764,49 +789,48 @@
       box-shadow: 0 0 0 2px var(--accent);
     }
 
-    /* Target feedback bar inside log popup */
     .log-target-preview {
       background: #F1F5F9;
       border-radius: 10px;
-      padding: 0.65rem 0.85rem;
+      padding: 0.6rem 0.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
     }
 
     .status-badge-preview {
-      padding: 0.2rem 0.55rem;
+      padding: 0.15rem 0.45rem;
       border-radius: 6px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
     }
     .status-badge-preview.met { background: #DCFCE7; color: #15803D; }
     .status-badge-preview.under { background: #FEF3C7; color: #B45309; }
 
-    /* Modal Form Inputs */
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.35rem;
     }
 
     .form-label {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--text);
     }
 
     .form-input, .form-select {
       width: 100%;
-      padding: 0.65rem 0.85rem;
+      padding: 0.6rem 0.75rem;
       border-radius: 10px;
       border: 1.5px solid var(--card-border);
       background: #F8FAFC;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
-      transition: var(--transition);
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     .form-input:focus, .form-select:focus {
@@ -817,36 +841,34 @@
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
+      gap: 0.65rem;
     }
 
     .btn-submit {
       background: var(--accent);
       color: #FFF;
       border: none;
-      padding: 0.75rem;
+      padding: 0.7rem;
       border-radius: 10px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: var(--transition);
-      margin-top: 0.5rem;
+      margin-top: 0.35rem;
     }
 
     .btn-submit:hover {
-      background: #2563EB;
+      background: #1D4ED8;
     }
 
     .btn-clear-entry {
       background: #FEE2E2;
       color: #DC2626;
       border: none;
-      padding: 0.75rem;
+      padding: 0.7rem;
       border-radius: 10px;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: var(--transition);
     }
   </style>
 </head>
@@ -856,41 +878,38 @@
     <header>
       <h1>Habit<span>Box</span></h1>
       <div class="header-actions">
-        <button class="btn-action primary" onclick="openAddHabitModal()">+ Add Habit</button>
+        <button class="btn-action primary" onclick="openAddHabitModal()">+ Add</button>
         <button class="btn-action" id="export-btn">Export</button>
       </div>
     </header>
 
-    <!-- Visual Dashboard Overview -->
     <div class="overview-card" id="overview-card">
       <div class="overview-header">
-        <div class="overview-title">📊 Habits Performance Overview</div>
+        <div class="overview-title">📊 Monthly Overview</div>
         <div class="overview-month-pill" id="overview-month-tag">Month 2026</div>
       </div>
 
       <div class="overview-stats">
         <div class="ov-box">
-          <span class="ov-label">Month Target Achieved</span>
-          <span class="ov-value" id="ov-total-month">0 goals</span>
-          <span class="ov-sub" id="ov-month-rate">0% full goal rate</span>
+          <span class="ov-label">Goals Met</span>
+          <span class="ov-value" id="ov-total-month">0</span>
+          <span class="ov-sub" id="ov-month-rate">0% hit rate</span>
         </div>
         <div class="ov-box">
-          <span class="ov-label">Top Performer</span>
+          <span class="ov-label">Top Habit</span>
           <span class="ov-value" id="ov-top-habit">—</span>
-          <span class="ov-sub" id="ov-top-habit-stat">0 days on target</span>
+          <span class="ov-sub" id="ov-top-habit-stat">0 days</span>
         </div>
       </div>
 
-      <!-- Weekly Habit Activity Graph -->
       <div class="weekly-bars-container">
         <div class="weekly-bars-title">
-          <span>7-Day Goal Compliance</span>
-          <span id="ov-week-rate">0% this week</span>
+          <span>7-Day Trend</span>
+          <span id="ov-week-rate">0%</span>
         </div>
         <div class="weekly-bars" id="overview-weekly-bars"></div>
       </div>
 
-      <!-- Habit by Habit Progress Bars & Numeric Totals -->
       <div class="habit-progress-breakdown" id="overview-habit-breakdown"></div>
     </div>
 
@@ -898,7 +917,6 @@
     <div class="habit-list" id="habit-list"></div>
   </div>
 
-  <!-- Monthly Stats Modal -->
   <div class="modal-overlay" id="stats-modal">
     <div class="modal-card">
       <div class="modal-top">
@@ -908,15 +926,15 @@
 
       <div class="stats-grid">
         <div class="stat-tile orange">
-          <span class="stat-label">Longest Streak</span>
+          <span class="stat-label">Best Streak</span>
           <span class="stat-val" id="stat-best-streak">0d</span>
         </div>
         <div class="stat-tile blue">
-          <span class="stat-label" id="stat-total-label">Month Total</span>
+          <span class="stat-label" id="stat-total-label">Total</span>
           <span class="stat-val" id="stat-month-total">0</span>
         </div>
         <div class="stat-tile pink">
-          <span class="stat-label">Goal Hit Rate</span>
+          <span class="stat-label">Hit Rate</span>
           <span class="stat-val" id="stat-month-rate">0%</span>
         </div>
       </div>
@@ -929,14 +947,13 @@
 
       <div class="calendar-body">
         <div class="cal-weekdays">
-          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
         </div>
         <div class="cal-days-grid" id="calendar-days"></div>
       </div>
     </div>
   </div>
 
-  <!-- Log Value / Numeric Input Modal -->
   <div class="modal-overlay" id="log-modal">
     <div class="modal-card">
       <div class="modal-top">
@@ -945,8 +962,8 @@
       </div>
       <form id="log-form" onsubmit="handleLogSubmit(event)">
         <div class="log-target-preview" id="log-target-info">
-          <span id="log-target-text">Daily Target: 30 mins</span>
-          <span class="status-badge-preview under" id="log-status-badge">Partial (< 30)</span>
+          <span id="log-target-text">Target: 30 mins</span>
+          <span class="status-badge-preview under" id="log-status-badge">Partial</span>
         </div>
         <div class="form-group" style="margin-top: 0.75rem;">
           <label class="form-label" id="log-input-label">Enter amount:</label>
@@ -960,53 +977,52 @@
     </div>
   </div>
 
-  <!-- Add New Habit Modal -->
   <div class="modal-overlay" id="add-habit-modal">
     <div class="modal-card">
       <div class="modal-top">
-        <div class="modal-title">✨ Add New Habit</div>
+        <div class="modal-title">✨ Add Habit</div>
         <button class="modal-close" onclick="closeModal('add-habit-modal')">✕</button>
       </div>
-      <form id="add-habit-form" onsubmit="handleAddHabit(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+      <form id="add-habit-form" onsubmit="handleAddHabit(event)" style="display: flex; flex-direction: column; gap: 0.85rem;">
         <div class="form-row">
           <div class="form-group" style="flex: 2;">
-            <label class="form-label">Habit Name</label>
+            <label class="form-label">Name</label>
             <input type="text" class="form-input" id="new-habit-name" placeholder="e.g. Meditation" required />
           </div>
           <div class="form-group" style="flex: 1;">
-            <label class="form-label">Icon / Emoji</label>
+            <label class="form-label">Emoji</label>
             <input type="text" class="form-input" id="new-habit-icon" placeholder="🧘" required />
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Tracking Type</label>
+          <label class="form-label">Type</label>
           <select class="form-select" id="new-habit-type" onchange="toggleAddTargetFields()">
-            <option value="numeric">Numeric Goal (Minutes, Litres, Pages, etc.)</option>
-            <option value="binary">Simple Checkbox (Done / Not Done)</option>
+            <option value="numeric">Numeric Target</option>
+            <option value="binary">Simple Checkbox</option>
           </select>
         </div>
 
         <div class="form-row" id="target-fields-row">
           <div class="form-group">
             <label class="form-label">Unit</label>
-            <input type="text" class="form-input" id="new-habit-unit" placeholder="e.g. mins, pages, kms" />
+            <input type="text" class="form-input" id="new-habit-unit" placeholder="mins, L, pages" />
           </div>
           <div class="form-group">
-            <label class="form-label">Daily Target</label>
-            <input type="number" step="any" class="form-input" id="new-habit-target" placeholder="e.g. 30" />
+            <label class="form-label">Daily Goal</label>
+            <input type="number" step="any" class="form-input" id="new-habit-target" placeholder="30" />
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Card Color Theme</label>
+          <label class="form-label">Theme Color</label>
           <select class="form-select" id="new-habit-color">
-            <option value="#F97316">Orange</option>
-            <option value="#0EA5E9">Blue</option>
-            <option value="#10B981">Emerald Green</option>
-            <option value="#8B5CF6">Purple</option>
-            <option value="#EC4899">Pink</option>
-            <option value="#EAB308">Amber</option>
+            <option value="#EA580C">Orange</option>
+            <option value="#0284C7">Sky Blue</option>
+            <option value="#059669">Emerald Green</option>
+            <option value="#7C3AED">Purple</option>
+            <option value="#DB2777">Pink</option>
+            <option value="#D97706">Amber</option>
           </select>
         </div>
 
@@ -1017,45 +1033,16 @@
 
   <script>
     const default_habits = [
-      { 
-        id: '1', 
-        name: 'Exercise', 
-        icon: '🏃‍♂️', 
-        type: 'numeric', 
-        unit: 'mins', 
-        target: 30, 
-        color: '#F97316', 
-        history: {} 
-      },
-      { 
-        id: '2', 
-        name: 'Water Intake', 
-        icon: '💧', 
-        type: 'numeric', 
-        unit: 'L', 
-        target: 3, 
-        color: '#0EA5E9', 
-        history: {} 
-      },
-      { 
-        id: '3', 
-        name: 'Reading', 
-        icon: '📖', 
-        type: 'numeric', 
-        unit: 'pages', 
-        target: 20, 
-        color: '#10B981', 
-        history: {} 
-      }
+      { id: '1', name: 'Exercise', icon: '🏃‍♂️', type: 'numeric', unit: 'mins', target: 30, color: '#EA580C', history: {} },
+      { id: '2', name: 'Water Intake', icon: '💧', type: 'numeric', unit: 'L', target: 3, color: '#0284C7', history: {} },
+      { id: '3', name: 'Reading', icon: '📖', type: 'numeric', unit: 'pages', target: 20, color: '#059669', history: {} }
     ];
 
     let habits = [];
     try {
-      const stored = localStorage.getItem('habits_box_data_v3');
+      const stored = localStorage.getItem('habitbox_mobile_data');
       if (stored) habits = JSON.parse(stored);
-    } catch(e) {
-      habits = [];
-    }
+    } catch(e) { habits = []; }
 
     if (!Array.isArray(habits) || habits.length === 0) {
       habits = JSON.parse(JSON.stringify(default_habits));
@@ -1080,7 +1067,7 @@
 
     function saveState() {
       try {
-        localStorage.setItem('habits_box_data_v3', JSON.stringify(habits));
+        localStorage.setItem('habitbox_mobile_data', JSON.stringify(habits));
       } catch(e) {}
       render();
       if (selectedHabitId) renderModal();
@@ -1115,7 +1102,6 @@
       return dates;
     }
 
-    // Goal Evaluation Logic: 'none', 'partial', 'completed'
     function getDayGoalStatus(habit, dateStr) {
       if (!habit.history || habit.history[dateStr] === undefined) return 'none';
       const val = habit.history[dateStr];
@@ -1208,7 +1194,7 @@
 
       if (!name) return;
 
-      const newHabit = {
+      habits.push({
         id: Date.now().toString(),
         name,
         icon,
@@ -1217,9 +1203,8 @@
         target,
         color,
         history: {}
-      };
+      });
 
-      habits.push(newHabit);
       saveState();
       closeModal('add-habit-modal');
       document.getElementById('add-habit-form').reset();
@@ -1229,7 +1214,7 @@
     function deleteHabit(habitId) {
       const habit = habits.find(h => h.id === habitId);
       if (!habit) return;
-      if (confirm(`Are you sure you want to delete the habit "${habit.name}"?`)) {
+      if (confirm(`Delete "${habit.name}"?`)) {
         habits = habits.filter(h => h.id !== habitId);
         saveState();
       }
@@ -1242,15 +1227,15 @@
       if (habit.type === 'numeric') {
         activeLogContext = { habitId, dateStr };
         const currentVal = habit.history[dateStr] || '';
-        document.getElementById('log-modal-title').innerText = `${habit.icon} ${habit.name} (${dateStr})`;
-        document.getElementById('log-input-label').innerText = `Enter ${habit.unit ? habit.unit : 'amount'}:`;
+        document.getElementById('log-modal-title').innerText = `${habit.icon} ${habit.name}`;
+        document.getElementById('log-input-label').innerText = `Amount for ${dateStr} (${habit.unit || 'units'}):`;
         
-        const targetText = habit.target ? `Daily Target: ${habit.target} ${habit.unit}` : 'No target set';
+        const targetText = habit.target ? `Target: ${habit.target} ${habit.unit}` : 'No target';
         document.getElementById('log-target-text').innerText = targetText;
         
         const input = document.getElementById('log-input-val');
         input.value = currentVal;
-        input.placeholder = habit.target ? `e.g. ${habit.target}` : '0';
+        input.placeholder = habit.target ? `${habit.target}` : '0';
         updateLiveTargetStatus();
 
         document.getElementById('log-modal').classList.add('open');
@@ -1274,19 +1259,19 @@
       const badge = document.getElementById('log-status-badge');
 
       if (!habit.target || habit.target <= 0) {
-        badge.innerText = 'Active';
+        badge.innerText = 'Logged';
         badge.className = 'status-badge-preview met';
         return;
       }
 
       if (val >= habit.target) {
-        badge.innerText = `Goal Met (>= ${habit.target})`;
+        badge.innerText = `Goal Met (≥ ${habit.target})`;
         badge.className = 'status-badge-preview met';
       } else if (val > 0) {
         badge.innerText = `Partial (< ${habit.target})`;
         badge.className = 'status-badge-preview under';
       } else {
-        badge.innerText = `Not Completed`;
+        badge.innerText = `Incomplete`;
         badge.className = 'status-badge-preview under';
       }
     }
@@ -1331,7 +1316,6 @@
 
       let totalMonthTargetMet = 0;
       let habitMonthStats = [];
-
       const recent7Days = getLast7Days();
 
       habits.forEach(habit => {
@@ -1365,7 +1349,7 @@
           id: habit.id,
           name: habit.name,
           icon: habit.icon,
-          color: habit.color || '#3B82F6',
+          color: habit.color || '#2563EB',
           type: habit.type,
           unit: habit.unit,
           target: habit.target,
@@ -1380,17 +1364,17 @@
       const maxPossibleMonth = totalDaysInMonth * totalHabits;
       const overallMonthRate = maxPossibleMonth > 0 ? Math.round((totalMonthTargetMet / maxPossibleMonth) * 100) : 0;
 
-      document.getElementById('ov-total-month').innerText = `${totalMonthTargetMet} goals met`;
-      document.getElementById('ov-month-rate').innerText = `${overallMonthRate}% full goal compliance`;
+      document.getElementById('ov-total-month').innerText = `${totalMonthTargetMet}`;
+      document.getElementById('ov-month-rate').innerText = `${overallMonthRate}% hit rate`;
 
       habitMonthStats.sort((a, b) => b.fullCount - a.fullCount);
       const topHabit = habitMonthStats[0];
       if (topHabit && topHabit.fullCount > 0) {
         document.getElementById('ov-top-habit').innerText = `${topHabit.icon} ${topHabit.name}`;
-        document.getElementById('ov-top-habit-stat').innerText = `${topHabit.fullCount} days 100% met`;
+        document.getElementById('ov-top-habit-stat').innerText = `${topHabit.fullCount}d on target`;
       } else {
-        document.getElementById('ov-top-habit').innerText = `None yet`;
-        document.getElementById('ov-top-habit-stat').innerText = `0 days met`;
+        document.getElementById('ov-top-habit').innerText = `—`;
+        document.getElementById('ov-top-habit-stat').innerText = `0d on target`;
       }
 
       const weeklyBarsEl = document.getElementById('overview-weekly-bars');
@@ -1419,13 +1403,13 @@
           <div class="bar-track">
             <div class="bar-fill ${fillPercent === 100 ? 'full' : ''}" style="height: ${fillPercent}%;"></div>
           </div>
-          <span class="bar-day-name">${dayName}</span>
+          <span class="bar-day-name">${dayName[0]}</span>
         `;
         weeklyBarsEl.appendChild(col);
       });
 
       const weekConsistency = maxPossibleWeek > 0 ? Math.round((totalWeeklyFullGoals / maxPossibleWeek) * 100) : 0;
-      document.getElementById('ov-week-rate').innerText = `${weekConsistency}% goals met this week`;
+      document.getElementById('ov-week-rate').innerText = `${weekConsistency}% week compliance`;
 
       const breakdownEl = document.getElementById('overview-habit-breakdown');
       breakdownEl.innerHTML = '';
@@ -1434,15 +1418,15 @@
         const row = document.createElement('div');
         row.className = 'habit-prog-row';
 
-        let subDetail = `${item.fullCount}/${totalDaysInMonth} days target met (${item.rate}%)`;
+        let subDetail = `${item.fullCount}/${totalDaysInMonth}d met (${item.rate}%)`;
         if (item.type === 'numeric') {
-          subDetail = `Week: <strong>${Math.round(item.weekTotal * 10)/10} ${item.unit}</strong> | Month: <strong>${Math.round(item.monthTotal * 10)/10} ${item.unit}</strong> (${item.fullCount}d on-target)`;
+          subDetail = `W: <strong>${Math.round(item.weekTotal * 10)/10} ${item.unit}</strong> | M: <strong>${Math.round(item.monthTotal * 10)/10} ${item.unit}</strong> (${item.fullCount}d on-target)`;
         }
 
         row.innerHTML = `
           <div class="habit-prog-label">
             <span>${item.icon} ${escapeHtml(item.name)}</span>
-            <span>${item.rate}% target met</span>
+            <span>${item.rate}%</span>
           </div>
           <div class="habit-prog-track">
             <div class="habit-prog-fill" style="width: ${item.rate}%; background-color: ${item.color};"></div>
@@ -1469,7 +1453,7 @@
         
         const card = document.createElement('div');
         card.className = 'habit-card';
-        card.style.setProperty('--card-accent', habit.color || '#3B82F6');
+        card.style.setProperty('--card-accent', habit.color || '#2563EB');
 
         let targetHint = '';
         if (habit.type === 'numeric' && habit.target) {
@@ -1496,7 +1480,6 @@
         const statsBtn = header.querySelector(`#btn-stats-${habit.id}`);
         statsBtn.addEventListener('click', () => openModal(habit.id));
 
-        // 7-Day Buttons with Colored Target Indicators
         const checkRow = document.createElement('div');
         checkRow.className = 'habit-checkbox-row';
 
@@ -1513,7 +1496,7 @@
           if (habit.type === 'numeric') {
             const rawVal = habit.history ? habit.history[dateStr] : null;
             if (rawVal !== undefined && rawVal !== null) {
-              valBadge = `<span class="day-val-tag">${rawVal} ${habit.unit}</span>`;
+              valBadge = `<span class="day-val-tag">${rawVal}</span>`;
               if (habit.target && habit.target > 0) {
                 meterPercent = Math.min(100, Math.round((Number(rawVal) / habit.target) * 100));
               } else {
@@ -1530,7 +1513,7 @@
           btn.type = 'button';
           btn.className = `day-check-btn ${status} ${isToday ? 'today' : ''}`;
           btn.innerHTML = `
-            <span class="day-label">${dayName}</span>
+            <span class="day-label">${dayName[0]}</span>
             <span class="day-date">${d.getDate()}</span>
             ${valBadge}
             <div class="day-meter-track">
@@ -1546,7 +1529,6 @@
           checkRow.appendChild(btn);
         });
 
-        // 30-Day Heatmap with Amber/Green Coloring
         const heatmap = document.createElement('div');
         heatmap.className = 'heatmap-cells';
         recent30Days.forEach(dateStr => {
