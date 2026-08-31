@@ -17,7 +17,6 @@
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --danger: #ef4444;
-      --success: #22c55e;
       --radius: 12px;
     }
 
@@ -165,7 +164,7 @@
       gap: 0.75rem;
     }
 
-    input, select {
+    input {
       flex: 1;
       padding: 0.75rem 1rem;
       background: var(--bg-main);
@@ -175,7 +174,7 @@
       font-size: 0.95rem;
     }
 
-    input:focus, select:focus {
+    input:focus {
       outline: 2px solid var(--primary);
       border-color: transparent;
     }
@@ -314,21 +313,21 @@
 
     <div class="card">
       <div class="mode-toggle">
-        <button class="mode-btn active" id="btnAutoMode" onclick="setMode('auto')">Auto Lookup (Web / DB)</button>
+        <button class="mode-btn active" id="btnAutoMode" onclick="setMode('auto')">Auto Lookup</button>
         <button class="mode-btn" id="btnManualMode" onclick="setMode('manual')">Manual Entry</button>
       </div>
 
       <form id="foodForm" onsubmit="handleLogFood(event)">
         <div id="autoInputs">
           <div class="form-group">
-            <input type="text" id="foodSearch" placeholder="e.g. Oats, Greek Yogurt, Chicken Breast, Paneer..." autocomplete="off">
+            <input type="text" id="foodSearch" placeholder="e.g. Mutton Curry, Muesli, Oats, Chicken..." autocomplete="off">
             <input type="number" id="foodAmount" class="qty-input" placeholder="Grams" value="100" min="1">
           </div>
         </div>
 
         <div id="manualInputs" style="display: none;">
           <div class="form-group">
-            <input type="text" id="manualName" placeholder="e.g. Protein Oats Smoothie / Whey Scoop">
+            <input type="text" id="manualName" placeholder="e.g. Protein Smoothie, Homemade Shake">
             <input type="number" id="manualProtein" class="qty-input" placeholder="Protein (g)" step="0.1" min="0">
           </div>
         </div>
@@ -343,35 +342,38 @@
         <h2 style="font-size: 1.15rem; font-weight: 600;">Today's Log</h2>
         <button class="clear-btn" onclick="clearToday()">Reset Day</button>
       </div>
-      <ul class="history-list" id="historyList">
-        </ul>
+      <ul class="history-list" id="historyList"></ul>
     </div>
   </div>
 
   <script>
-    // Local nutrition database (grams of protein per 100g or standard unit)
-    const localDatabase = {
-      "oats": 13.5,
-      "rolled oats": 13.5,
-      "greek yogurt": 10.0,
-      "yogurt": 3.5,
-      "chicken breast": 31.0,
-      "chicken": 27.0,
-      "paneer": 18.0,
-      "tofu": 17.0,
-      "egg": 6.0,          // standard 1 unit (assumes ~50g egg = ~12g/100g)
-      "eggs": 6.0,
-      "egg white": 11.0,
-      "peanut butter": 25.0,
-      "milk": 3.4,
-      "almonds": 21.0,
-      "chia seeds": 16.5,
-      "whey protein": 80.0,
-      "plant protein": 75.0,
-      "rice": 2.7,
-      "lentils": 9.0,
-      "chana": 19.0
-    };
+    // Comprehensive protein per 100g database
+    const foodDatabase = [
+      { keys: ["muesli"], protein: 11.0 },
+      { keys: ["mutton curry", "mutton gravy", "lamb curry"], protein: 16.5 },
+      { keys: ["mutton", "lamb", "goat meat"], protein: 25.0 },
+      { keys: ["chicken curry", "chicken gravy"], protein: 17.0 },
+      { keys: ["chicken breast"], protein: 31.0 },
+      { keys: ["chicken"], protein: 27.0 },
+      { keys: ["oats", "rolled oats", "oatmeal"], protein: 13.5 },
+      { keys: ["greek yogurt"], protein: 10.0 },
+      { keys: ["curd", "yogurt", "dahi"], protein: 3.5 },
+      { keys: ["paneer", "cottage cheese"], protein: 18.0 },
+      { keys: ["tofu"], protein: 17.0 },
+      { keys: ["egg white"], protein: 11.0 },
+      { keys: ["egg", "boiled egg"], protein: 13.0 },
+      { keys: ["peanut butter"], protein: 25.0 },
+      { keys: ["whey", "whey protein"], protein: 80.0 },
+      { keys: ["plant protein", "pea protein"], protein: 75.0 },
+      { keys: ["dal", "daal", "lentil", "lentils"], protein: 6.5 },
+      { keys: ["chana", "chickpeas", "chole"], protein: 8.9 },
+      { keys: ["rajma", "kidney beans"], protein: 8.7 },
+      { keys: ["soya chunks", "soy chunks"], protein: 52.0 },
+      { keys: ["milk"], protein: 3.4 },
+      { keys: ["almonds"], protein: 21.0 },
+      { keys: ["chia seeds"], protein: 16.5 },
+      { keys: ["rice", "white rice", "cooked rice"], protein: 2.7 }
+    ];
 
     let logs = JSON.parse(localStorage.getItem('protein_logs')) || [];
     let dailyGoal = parseInt(localStorage.getItem('protein_goal')) || 120;
@@ -393,22 +395,28 @@
       document.getElementById('statusMessage').textContent = '';
     }
 
+    function findInLocalDB(query) {
+      const q = query.toLowerCase().trim();
+      for (const item of foodDatabase) {
+        if (item.keys.some(k => q === k || q.includes(k) || k.includes(q))) {
+          return item.protein;
+        }
+      }
+      return null;
+    }
+
     async function queryOpenFoodFacts(itemQuery) {
       try {
-        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(itemQuery)}&search_simple=1&action=process&json=1&page_size=1`);
+        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(itemQuery)}&search_simple=1&action=process&json=1&page_size=5`);
         const data = await res.json();
         if (data.products && data.products.length > 0) {
-          const product = data.products[0];
-          const proteins100g = product.nutriments?.proteins_100g;
-          if (proteins100g !== undefined && proteins100g !== null) {
-            return {
-              name: product.product_name || itemQuery,
-              proteinPer100g: parseFloat(proteins100g)
-            };
+          const validProduct = data.products.find(p => p.nutriments?.proteins_100g !== undefined && p.nutriments?.proteins_100g !== null);
+          if (validProduct) {
+            return parseFloat(validProduct.nutriments.proteins_100g);
           }
         }
       } catch (err) {
-        console.warn("API lookup failed, falling back to local database.", err);
+        console.warn("API lookup failed:", err);
       }
       return null;
     }
@@ -433,37 +441,35 @@
         return;
       }
 
-      // Auto Mode
       const query = document.getElementById('foodSearch').value.trim();
       const grams = parseFloat(document.getElementById('foodAmount').value);
 
       if (!query || isNaN(grams) || grams <= 0) {
-        status.textContent = 'Please enter a valid food name and weight in grams.';
+        status.textContent = 'Please enter food name and weight in grams.';
         return;
       }
 
-      status.textContent = 'Searching nutrition database...';
-      const cleanKey = query.toLowerCase();
+      status.textContent = 'Checking nutrition data...';
 
-      // Check local DB first for quick response
-      if (localDatabase[cleanKey]) {
-        const proteinCalculated = (localDatabase[cleanKey] * (grams / 100));
-        addLogEntry(query, proteinCalculated, `${grams}g (Local DB)`);
+      // 1. Check local generic food database first
+      const localProteinPer100g = findInLocalDB(query);
+      if (localProteinPer100g !== null) {
+        const calculated = (localProteinPer100g * (grams / 100));
+        addLogEntry(query, calculated, `${grams}g (${localProteinPer100g}g/100g)`);
         document.getElementById('foodSearch').value = '';
         status.textContent = '';
         return;
       }
 
-      // Query Open Food Facts API
-      const apiResult = await queryOpenFoodFacts(query);
-      if (apiResult) {
-        const proteinCalculated = (apiResult.proteinPer100g * (grams / 100));
-        addLogEntry(apiResult.name, proteinCalculated, `${grams}g (Web: ${apiResult.proteinPer100g}g/100g)`);
+      // 2. Query web fallback
+      const webProteinPer100g = await queryOpenFoodFacts(query);
+      if (webProteinPer100g !== null) {
+        const calculated = (webProteinPer100g * (grams / 100));
+        addLogEntry(query, calculated, `${grams}g (Web: ${webProteinPer100g}g/100g)`);
         document.getElementById('foodSearch').value = '';
         status.textContent = '';
       } else {
-        // Estimation fallback
-        status.textContent = 'Could not find online data. Please use Manual Entry for this item.';
+        status.textContent = `No exact match for "${query}". Switch to "Manual Entry" to set protein directly.`;
       }
     }
 
@@ -486,7 +492,7 @@
     }
 
     function clearToday() {
-      if (confirm('Are you sure you want to clear all logged meals for today?')) {
+      if (confirm('Clear all logged meals for today?')) {
         logs = [];
         saveAndRender();
       }
@@ -531,7 +537,6 @@
       });
     }
 
-    // Initial render
     render();
   </script>
 </body>
