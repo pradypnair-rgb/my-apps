@@ -21,11 +21,10 @@
       --radius: 16px;
       --transition: all 0.15s ease-in-out;
 
-      --orange: #FF6B35;
-      --blue: #2563EB;
-      --pink: #E11D48;
-      --purple: #8B5CF6;
-      --cyan: #0EA5E9;
+      --color-1: #F97316; /* Orange - Exercise */
+      --color-2: #8B5CF6; /* Purple - Water */
+      --color-3: #10B981; /* Emerald Green - Reading */
+      --color-4: #0EA5E9; /* Cyan */
     }
 
     * {
@@ -68,7 +67,7 @@
     }
 
     h1 span {
-      color: var(--purple);
+      color: var(--color-2);
     }
 
     button.export {
@@ -117,8 +116,9 @@
       height: 6px;
     }
 
-    .habit-card[data-index="0"]::before { background-color: var(--orange); }
-    .habit-card[data-index="1"]::before { background-color: var(--purple); }
+    .habit-card[data-index="0"]::before { background-color: var(--color-1); }
+    .habit-card[data-index="1"]::before { background-color: var(--color-2); }
+    .habit-card[data-index="2"]::before { background-color: var(--color-3); }
 
     .habit-header {
       display: flex;
@@ -262,9 +262,7 @@
       background: var(--success);
     }
 
-    /* ========================================================= */
-    /* Monthly Stats Modal (Inspired by your screenshots)       */
-    /* ========================================================= */
+    /* Monthly Stats Modal */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -330,7 +328,6 @@
       color: var(--text-muted);
     }
 
-    /* Metric Stat Tiles */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -365,7 +362,6 @@
       font-weight: 800;
     }
 
-    /* Month Navigation Header */
     .calendar-header {
       display: flex;
       justify-content: space-between;
@@ -387,7 +383,6 @@
       font-weight: 700;
     }
 
-    /* Calendar Grid */
     .calendar-body {
       display: flex;
       flex-direction: column;
@@ -435,7 +430,7 @@
     }
 
     .cal-day-cell.done {
-      background: var(--blue) !important;
+      background: #2563EB !important;
       color: #fff !important;
       font-weight: 700;
     }
@@ -456,7 +451,6 @@
     <div class="habit-list" id="habit-list"></div>
   </div>
 
-  <!-- Monthly Stats Modal -->
   <div class="modal-overlay" id="stats-modal">
     <div class="modal-card">
       <div class="modal-top">
@@ -464,7 +458,6 @@
         <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
 
-      <!-- Stat Tiles -->
       <div class="stats-grid">
         <div class="stat-tile orange">
           <span class="stat-label">Longest Streak</span>
@@ -480,14 +473,12 @@
         </div>
       </div>
 
-      <!-- Calendar Controls -->
       <div class="calendar-header">
         <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
         <span class="month-display" id="month-name-display">Month 2026</span>
         <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
       </div>
 
-      <!-- Full Month Calendar -->
       <div class="calendar-body">
         <div class="cal-weekdays">
           <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
@@ -500,10 +491,19 @@
   <script>
     const default_habits = [
       { id: '1', name: 'Exercise', icon: '🏃‍♂️', history: {} },
-      { id: '2', name: '3 ltrs of water', icon: '💧', history: {} }
+      { id: '2', name: '3 ltrs of water', icon: '💧', history: {} },
+      { id: '3', name: 'Reading', icon: '📖', history: {} }
     ];
 
     let habits = JSON.parse(localStorage.getItem('habits_box_data')) || default_habits;
+
+    // Ensure new default habits are merged seamlessly into existing browser data
+    default_habits.forEach(defHabit => {
+      if (!habits.some(h => h.id === defHabit.id || h.name.toLowerCase() === defHabit.name.toLowerCase())) {
+        habits.push(defHabit);
+      }
+    });
+
     let selectedHabitId = null;
     let viewDate = new Date();
 
@@ -542,7 +542,6 @@
       return dates;
     }
 
-    // Calculate current streak
     function calculateStreak(history) {
       let streak = 0;
       let d = new Date();
@@ -564,7 +563,6 @@
       return streak;
     }
 
-    // Calculate longest streak across history
     function calculateBestStreak(history) {
       const sortedDates = Object.keys(history).filter(d => history[d]).sort();
       if (sortedDates.length === 0) return 0;
@@ -599,7 +597,6 @@
       }
     }
 
-    // Main App Renderer
     const habitListEl = document.getElementById('habit-list');
 
     function render() {
@@ -613,7 +610,7 @@
         
         const card = document.createElement('div');
         card.className = 'habit-card';
-        card.setAttribute('data-index', index % 2);
+        card.setAttribute('data-index', index % 3);
 
         // Header
         const header = document.createElement('div');
@@ -629,7 +626,7 @@
           </div>
         `;
 
-        // 7-Day Buttons (Backfillable)
+        // 7-Day Buttons
         const checkRow = document.createElement('div');
         checkRow.className = 'habit-checkbox-row';
 
@@ -679,7 +676,6 @@
       });
     }
 
-    // Modal & Calendar Logic
     function openModal(habitId) {
       selectedHabitId = habitId;
       viewDate = new Date();
@@ -708,7 +704,6 @@
       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       document.getElementById('month-name-display').innerText = `${monthNames[month]} ${year}`;
 
-      // Calculate Month Metrics
       const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
       let monthCompleted = 0;
 
@@ -724,21 +719,18 @@
       document.getElementById('stat-month-count').innerText = monthCompleted;
       document.getElementById('stat-month-rate').innerText = `${completionRate}%`;
 
-      // Build Calendar Grid
       const calendarDaysEl = document.getElementById('calendar-days');
       calendarDaysEl.innerHTML = '';
 
       const firstDayIndex = new Date(year, month, 1).getDay();
       const todayStr = formatDate(new Date());
 
-      // Empty lead days
       for (let i = 0; i < firstDayIndex; i++) {
         const emptyCell = document.createElement('div');
         emptyCell.className = 'cal-day-cell empty';
         calendarDaysEl.appendChild(emptyCell);
       }
 
-      // Actual days
       for (let day = 1; day <= totalDaysInMonth; day++) {
         const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const isDone = Boolean(habit.history[dStr]);
@@ -756,22 +748,4 @@
       }
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    document.getElementById('export-btn').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(habits, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `habitbox-backup-${formatDate(new Date())}.json`;
-      a.click();
-    });
-
-    render();
-  </script>
-</body>
-</html>
+    function escape
