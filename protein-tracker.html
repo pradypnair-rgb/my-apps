@@ -198,6 +198,39 @@
       transition: width 0.3s ease;
     }
 
+    /* Quick Recents Bar */
+    .recents-container {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      scrollbar-width: none;
+    }
+    .recents-container::-webkit-scrollbar { display: none; }
+
+    .recent-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: all 0.15s ease;
+    }
+    .recent-chip:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
     .mode-switch {
       display: flex;
       gap: 0.4rem;
@@ -291,13 +324,36 @@
     .status-msg.error { color: var(--danger); }
     .status-msg.success { color: var(--f-color); }
 
+    .feed-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
     .feed-title {
       font-size: 0.8rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-muted);
-      margin-bottom: 0.75rem;
+    }
+
+    .btn-copy-day {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-copy-day:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     .feed {
@@ -338,18 +394,30 @@
     .tag-val.c { color: var(--c-color); }
     .tag-val.f { color: var(--f-color); }
 
-    .btn-del {
+    .feed-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .btn-action-icon {
       background: transparent;
       border: none;
       color: var(--text-dim);
-      font-size: 1.15rem;
+      font-size: 0.95rem;
       line-height: 1;
       cursor: pointer;
-      padding: 0.2rem 0.4rem;
+      padding: 0.3rem;
       border-radius: 4px;
+      transition: all 0.15s;
     }
 
-    .btn-del:hover {
+    .btn-action-icon.copy:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .btn-action-icon.delete:hover {
       color: var(--danger);
       background: rgba(239, 68, 68, 0.08);
     }
@@ -455,6 +523,8 @@
       </div>
 
       <div class="card">
+        <div class="recents-container" id="recentsBar" style="display: none;"></div>
+
         <div class="mode-switch">
           <button type="button" class="mode-pill active" id="btnModeAuto">Lookup</button>
           <button type="button" class="mode-pill" id="btnModeManual">Manual</button>
@@ -490,7 +560,10 @@
       </div>
 
       <div class="card">
-        <div class="feed-title">Logged Meals</div>
+        <div class="feed-header-row">
+          <div class="feed-title">Logged Meals</div>
+          <button type="button" class="btn-copy-day" id="btnCopyYesterday" onclick="copyYesterdayLog()">&#x2398; Copy Yesterday</button>
+        </div>
         <ul class="feed" id="mealsList"></ul>
       </div>
     </div>
@@ -526,7 +599,7 @@
 
   <script>
     const macroDB = [
-      // Idli & South Indian
+      // South Indian
       { keys: ["idli", "idlis", "idly", "steamed idli"], p: 2.0, c: 12.0, f: 0.2, isUnit: true, unitName: "idli", unitWeight: 45 },
       { keys: ["dosa", "plain dosa", "sada dosa"], p: 3.8, c: 28.0, f: 3.5, isUnit: true, unitName: "dosa", unitWeight: 80 },
       { keys: ["masala dosa"], p: 5.2, c: 42.0, f: 8.5, isUnit: true, unitName: "dosa", unitWeight: 140 },
@@ -722,7 +795,7 @@
       let rawQuery = document.getElementById('autoFoodName').value.trim();
       let qtyInput = document.getElementById('autoFoodQty').value;
       let qty = parseFloat(qtyInput);
-      if (isNaN(qty) || qty <= 0) qty = 1; // Auto-default to 1 if blank
+      if (isNaN(qty) || qty <= 0) qty = 1;
 
       const unit = document.getElementById('autoFoodUnit').value;
 
@@ -781,7 +854,7 @@
     function saveEntry(dateStr, name, p, c, f, details) {
       const cals = Math.round((p * 4) + (c * 4) + (f * 9));
       const entry = {
-        id: Date.now(),
+        id: Date.now() + Math.floor(Math.random() * 1000),
         date: dateStr,
         name: name.charAt(0).toUpperCase() + name.slice(1),
         p: Math.round(p * 10) / 10,
@@ -796,11 +869,66 @@
       renderDaily();
     }
 
+    window.copySingleItem = function(id) {
+      const item = allLogs.find(i => i.id === id);
+      if (!item) return;
+      const activeDateStr = toISODate(currentDate);
+      saveEntry(activeDateStr, item.name, item.p, item.c, item.f, item.details);
+      setStatus(`Copied ${item.name} to ${dateLabel.textContent}!`, 'success');
+    };
+
+    window.copyYesterdayLog = function() {
+      const activeDateStr = toISODate(currentDate);
+      
+      const prevDate = new Date(currentDate);
+      prevDate.setDate(prevDate.getDate() - 1);
+      const prevDateStr = toISODate(prevDate);
+
+      const yesterdayLogs = allLogs.filter(i => i.date === prevDateStr);
+
+      if (yesterdayLogs.length === 0) {
+        setStatus('No logged meals found on previous day.', 'error');
+        return;
+      }
+
+      yesterdayLogs.slice().reverse().forEach(item => {
+        saveEntry(activeDateStr, item.name, item.p, item.c, item.f, item.details);
+      });
+
+      setStatus(`Copied ${yesterdayLogs.length} items from yesterday!`, 'success');
+    };
+
     window.deleteEntry = function(id) {
       allLogs = allLogs.filter(item => item.id !== id);
       localStorage.setItem('macro_tracker_logs', JSON.stringify(allLogs));
       renderDaily();
     };
+
+    function renderRecents() {
+      const bar = document.getElementById('recentsBar');
+      if (allLogs.length === 0) {
+        bar.style.display = 'none';
+        return;
+      }
+
+      // Extract unique recent items by name
+      const uniqueRecents = [];
+      const seen = new Set();
+      for (const item of allLogs) {
+        if (!seen.has(item.name.toLowerCase())) {
+          seen.add(item.name.toLowerCase());
+          uniqueRecents.push(item);
+          if (uniqueRecents.length >= 4) break;
+        }
+      }
+
+      bar.innerHTML = uniqueRecents.map(item => `
+        <button type="button" class="recent-chip" onclick="copySingleItem(${item.id})" title="Click to repeat ${item.name}">
+          <span>&#x21bb;</span> ${item.name} <span style="opacity:0.6; font-size:0.65rem;">(${item.details})</span>
+        </button>
+      `).join('');
+      bar.style.display = 'flex';
+    }
 
     function renderDaily() {
       const activeDateStr = toISODate(currentDate);
@@ -824,26 +952,30 @@
 
       if (dayLogs.length === 0) {
         list.innerHTML = `<li style="text-align: center; color: var(--text-dim); font-size: 0.8rem; padding: 1rem 0;">No foods logged for this date.</li>`;
-        return;
+      } else {
+        dayLogs.forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'feed-row';
+          li.innerHTML = `
+            <div>
+              <div class="feed-name">${item.name} <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);">(${item.details})</span></div>
+              <div class="feed-tags">
+                <span class="tag-val p">${item.p}g P</span> • 
+                <span class="tag-val c">${item.c}g C</span> • 
+                <span class="tag-val f">${item.f}g F</span> • 
+                <span>${item.cals} kcal</span>
+              </div>
+            </div>
+            <div class="feed-actions">
+              <button type="button" class="btn-action-icon copy" onclick="copySingleItem(${item.id})" title="Duplicate to today">&#x2398;</button>
+              <button type="button" class="btn-action-icon delete" onclick="deleteEntry(${item.id})" title="Delete">&times;</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
       }
 
-      dayLogs.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'feed-row';
-        li.innerHTML = `
-          <div>
-            <div class="feed-name">${item.name} <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);">(${item.details})</span></div>
-            <div class="feed-tags">
-              <span class="tag-val p">${item.p}g P</span> • 
-              <span class="tag-val c">${item.c}g C</span> • 
-              <span class="tag-val f">${item.f}g F</span> • 
-              <span>${item.cals} kcal</span>
-            </div>
-          </div>
-          <button type="button" class="btn-del" onclick="deleteEntry(${item.id})">&times;</button>
-        `;
-        list.appendChild(li);
-      });
+      renderRecents();
     }
 
     function renderDashboard(daysCount) {
