@@ -3,50 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Daily Protein Tracker</title>
+  <title>Macro & Protein Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #090d16;
-      --card-bg: rgba(22, 30, 46, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --accent: #38bdf8;
-      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --danger: #f87171;
-      --radius-lg: 20px;
-      --radius-md: 12px;
-      --radius-sm: 8px;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --protein-color: #2563eb;
+      --carbs-color: #d97706;
+      --fats-color: #059669;
+      --danger: #dc2626;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%);
-      background-attachment: fixed;
+      background-color: var(--bg);
       color: var(--text-main);
       display: flex;
       justify-content: center;
       padding: 1.5rem 1rem 3rem 1rem;
       min-height: 100vh;
-      min-height: 100dvh;
     }
 
     .container {
       width: 100%;
-      max-width: 580px;
+      max-width: 650px;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
@@ -54,134 +53,22 @@
 
     .card {
       background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Header & Goal Section */
-    .header-row {
+    /* Top Navigation Tabs */
+    .view-switcher {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .brand-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .goal-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      padding: 0.35rem 0.75rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .goal-badge input {
-      width: 50px;
-      background: transparent;
-      border: none;
-      color: var(--text-main);
-      font-weight: 700;
-      font-size: 0.85rem;
-      text-align: right;
-      outline: none;
-    }
-
-    /* Macro Display */
-    .metric-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .metric-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      padding: 1rem;
+      background: #e2e8f0;
       border-radius: var(--radius-md);
+      padding: 3px;
+      gap: 3px;
     }
 
-    .metric-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .metric-val {
-      font-size: 1.85rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .metric-val span {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    /* Modern Progress Track */
-    .progress-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .progress-bar-bg {
-      width: 100%;
-      height: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent-gradient);
-      border-radius: 999px;
-      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .progress-info {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    /* Mode Segmented Controls */
-    .tab-control {
-      display: flex;
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-md);
-      padding: 4px;
-      gap: 4px;
-      margin-bottom: 1.25rem;
-    }
-
-    .tab-btn {
+    .view-tab {
       flex: 1;
       padding: 0.6rem 0.5rem;
       border: none;
@@ -189,444 +76,515 @@
       color: var(--text-muted);
       font-size: 0.85rem;
       font-weight: 600;
-      border-radius: var(--radius-sm);
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
     }
 
-    .tab-btn.active {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    .view-tab.active {
+      background: #ffffff;
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Inputs */
+    /* Date Header */
+    .date-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .date-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.45rem 0.8rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .date-input {
+      font-weight: 600;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-md);
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    /* Macro Card Grid */
+    .macro-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .macro-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 0.5rem;
+      text-align: center;
+    }
+
+    .macro-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .macro-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .macro-val.protein { color: var(--protein-color); }
+    .macro-val.carbs { color: var(--carbs-color); }
+    .macro-val.fats { color: var(--fats-color); }
+    .macro-val.cals { color: var(--text-main); }
+
+    .macro-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Target Bars */
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--protein-color);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Form Mode Switcher */
+    .mode-pills {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .pill-btn {
+      flex: 1;
+      padding: 0.45rem 0.5rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .pill-btn.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Forms */
     .form-row {
       display: flex;
-      gap: 0.6rem;
-      margin-bottom: 0.75rem;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
     }
 
-    input[type="text"], input[type="number"] {
+    input[type="text"], input[type="number"], select {
       flex: 1;
-      padding: 0.85rem 1rem;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--card-border);
+      padding: 0.7rem 0.85rem;
+      border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      color: #fff;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      background: #ffffff;
+      color: var(--text-main);
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-    }
-
-    .qty-box {
-      max-width: 120px;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
 
     .btn-submit {
       width: 100%;
-      padding: 0.9rem;
-      background: var(--accent-gradient);
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.95rem;
+      background: var(--primary);
+      color: #ffffff;
       border: none;
+      padding: 0.8rem;
+      font-weight: 600;
       border-radius: var(--radius-md);
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
-      transition: transform 0.1s ease, box-shadow 0.2s ease;
+      font-size: 0.9rem;
+      transition: background 0.2s;
     }
 
-    .btn-submit:active {
-      transform: scale(0.98);
+    .btn-submit:hover {
+      background: #1d4ed8;
     }
 
     .status-msg {
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-      min-height: 1rem;
+      font-size: 0.75rem;
+      color: var(--primary);
+      min-height: 1.1rem;
+      margin-top: 0.35rem;
     }
 
-    /* History & Log Feed */
+    /* Log Feed */
     .feed-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .feed-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .reset-btn {
-      background: none;
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      padding: 0.35rem 0.75rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .reset-btn:hover {
-      background: rgba(248, 113, 113, 0.1);
-      border-color: var(--danger);
-      color: var(--danger);
+      margin-bottom: 0.85rem;
     }
 
     .feed-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
-      max-height: 350px;
-      overflow-y: auto;
-      padding-right: 2px;
+      gap: 0.5rem;
     }
 
     .feed-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--card-border);
-      padding: 0.85rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
       border-radius: var(--radius-md);
-      transition: border-color 0.2s ease;
-    }
-
-    .feed-item:hover {
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    .item-left {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
     }
 
     .item-title {
+      font-size: 0.9rem;
       font-weight: 600;
-      font-size: 0.95rem;
-      color: #fff;
+      color: var(--text-main);
     }
 
-    .item-meta {
+    .item-tags {
+      display: flex;
+      gap: 0.4rem;
       font-size: 0.75rem;
       color: var(--text-muted);
+      margin-top: 0.2rem;
     }
 
-    .item-right {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-    }
-
-    .item-protein-val {
-      font-weight: 800;
-      color: var(--accent);
-      font-size: 1rem;
-    }
+    .tag-p { color: var(--protein-color); font-weight: 600; }
+    .tag-c { color: var(--carbs-color); font-weight: 600; }
+    .tag-f { color: var(--fats-color); font-weight: 600; }
 
     .btn-delete {
-      background: none;
+      background: transparent;
       border: none;
-      color: var(--text-muted);
+      color: #94a3b8;
+      font-size: 1.25rem;
       cursor: pointer;
-      font-size: 1.15rem;
-      line-height: 1;
-      padding: 0.2rem;
-      transition: color 0.2s ease;
+      padding: 0 0.25rem;
     }
 
     .btn-delete:hover {
       color: var(--danger);
     }
 
-    .empty-state {
-      text-align: center;
+    /* Dashboard Analytics Section */
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .chart-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .chart-label {
+      width: 65px;
+      font-weight: 600;
       color: var(--text-muted);
-      font-size: 0.85rem;
-      padding: 2rem 0;
+    }
+
+    .chart-bar-track {
+      flex: 1;
+      height: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .bar-segment {
+      height: 100%;
+    }
+
+    .bar-protein { background: var(--protein-color); }
+    .bar-carbs { background: var(--carbs-color); }
+    .bar-fats { background: var(--fats-color); }
+
+    .chart-val {
+      width: 75px;
+      text-align: right;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .summary-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.85rem;
+      background: var(--bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="card">
-      <div class="header-row">
-        <h1 class="brand-title">Protein Tracker</h1>
-        <div class="goal-badge">
-          <span>Target</span>
-          <input type="number" id="dailyGoal" value="120" min="10" max="400">
-          <span>g</span>
-        </div>
-      </div>
+    <div class="view-switcher">
+      <button class="view-tab active" onclick="switchView('daily')">Daily Tracker</button>
+      <button class="view-tab" onclick="switchView('weekly')">Weekly (7 Days)</button>
+      <button class="view-tab" onclick="switchView('monthly')">Monthly (30 Days)</button>
+    </div>
 
-      <div class="metric-grid">
-        <div class="metric-box">
-          <div class="metric-label">Logged</div>
-          <div class="metric-val" id="totalLogged">0.0 <span>g</span></div>
+    <div id="dailyView" style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <div class="card">
+        <div class="date-bar">
+          <button class="date-btn" onclick="shiftDate(-1)">&larr; Prev</button>
+          <input type="date" id="selectedDate" class="date-input" onchange="onDateChange()">
+          <button class="date-btn" onclick="shiftDate(1)">Next &rarr;</button>
         </div>
-        <div class="metric-box">
-          <div class="metric-label">Remaining</div>
-          <div class="metric-val" id="totalRemaining">120.0 <span>g</span></div>
-        </div>
-      </div>
 
-      <div class="progress-wrapper">
+        <div class="macro-grid">
+          <div class="macro-card">
+            <div class="macro-name">Protein</div>
+            <div class="macro-val protein" id="dayProtein">0g</div>
+            <div class="macro-sub">Target: <span id="proteinGoalLabel">120</span>g</div>
+          </div>
+          <div class="macro-card">
+            <div class="macro-name">Carbs</div>
+            <div class="macro-val carbs" id="dayCarbs">0g</div>
+            <div class="macro-sub">Total</div>
+          </div>
+          <div class="macro-card">
+            <div class="macro-name">Fats</div>
+            <div class="macro-val fats" id="dayFats">0g</div>
+            <div class="macro-sub">Total</div>
+          </div>
+          <div class="macro-card">
+            <div class="macro-name">Calories</div>
+            <div class="macro-val cals" id="dayCalories">0</div>
+            <div class="macro-sub">kcal</div>
+          </div>
+        </div>
+
         <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="progressBar"></div>
+          <div class="progress-bar-fill" id="dayProgressBar"></div>
         </div>
-        <div class="progress-info">
-          <span id="percentDisplay">0% Achieved</span>
-          <span id="itemsLoggedCount">0 Items</span>
+      </div>
+
+      <div class="card">
+        <div class="mode-pills">
+          <button class="pill-btn active" id="btnModeAuto" onclick="setEntryMode('auto')">Smart Auto Lookup</button>
+          <button class="pill-btn" id="btnModeManual" onclick="setEntryMode('manual')">Manual Macro Entry</button>
         </div>
+
+        <form id="addFoodForm" onsubmit="handleFoodSubmit(event)">
+          <div id="autoInputs">
+            <div class="form-row">
+              <input type="text" id="autoFoodName" placeholder="e.g. Oats, Mutton Curry, Greek Yogurt, Paneer..." autocomplete="off">
+              <input type="number" id="autoFoodGrams" placeholder="Grams" style="max-width: 110px;" value="100" min="1">
+            </div>
+          </div>
+
+          <div id="manualInputs" style="display: none;">
+            <div class="form-row">
+              <input type="text" id="manualName" placeholder="Item Name (e.g. Protein Shake)">
+            </div>
+            <div class="form-row">
+              <input type="number" id="manP" placeholder="Protein (g)" step="0.1" min="0">
+              <input type="number" id="manC" placeholder="Carbs (g)" step="0.1" min="0">
+              <input type="number" id="manF" placeholder="Fats (g)" step="0.1" min="0">
+            </div>
+          </div>
+
+          <div class="status-msg" id="statusMessage"></div>
+          <button type="submit" class="btn-submit">+ Log Food</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="feed-header">
+          <h2 style="font-size: 1rem; font-weight: 700;">Meals for this Day</h2>
+        </div>
+        <ul class="feed-list" id="mealsList"></ul>
       </div>
     </div>
 
-    <div class="card">
-      <div class="tab-control">
-        <button class="tab-btn active" id="tabAuto" onclick="setMode('auto')">Smart Lookup</button>
-        <button class="tab-btn" id="tabManual" onclick="setMode('manual')">Manual Input</button>
-      </div>
+    <div id="dashboardView" style="display: none; flex-direction: column; gap: 1.25rem;">
+      <div class="card">
+        <h2 id="dashTitle" style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem;">Weekly Overview</h2>
+        <div style="font-size: 0.8rem; color: var(--text-muted);" id="dashSubtitle">Average intake over the period</div>
 
-      <form id="foodForm" onsubmit="handleLogFood(event)">
-        <div id="autoInputs">
-          <div class="form-row">
-            <input type="text" id="foodSearch" placeholder="e.g. Oats, Mutton Curry, Greek Yogurt..." autocomplete="off">
-            <input type="number" id="foodAmount" class="qty-box" placeholder="Grams" value="100" min="1">
+        <div class="summary-card">
+          <div>
+            <div class="macro-name">Avg Protein</div>
+            <div class="macro-val protein" id="avgProtein" style="font-size: 1.1rem;">0g</div>
+          </div>
+          <div>
+            <div class="macro-name">Avg Carbs</div>
+            <div class="macro-val carbs" id="avgCarbs" style="font-size: 1.1rem;">0g</div>
+          </div>
+          <div>
+            <div class="macro-name">Avg Fats</div>
+            <div class="macro-val fats" id="avgFats" style="font-size: 1.1rem;">0g</div>
+          </div>
+          <div>
+            <div class="macro-name">Avg Cals</div>
+            <div class="macro-val cals" id="avgCals" style="font-size: 1.1rem;">0</div>
           </div>
         </div>
 
-        <div id="manualInputs" style="display: none;">
-          <div class="form-row">
-            <input type="text" id="manualName" placeholder="e.g. High Protein Smoothie, Protein Shake">
-            <input type="number" id="manualProtein" class="qty-box" placeholder="Protein (g)" step="0.1" min="0">
-          </div>
-        </div>
-
-        <div class="status-msg" id="statusMessage"></div>
-        <button type="submit" class="btn-submit">+ Log Protein</button>
-      </form>
-    </div>
-
-    <div class="card">
-      <div class="feed-header">
-        <div class="feed-title">Today's Meals</div>
-        <button class="reset-btn" onclick="clearToday()">Reset Day</button>
+        <div class="chart-container" id="chartFeed"></div>
       </div>
-      <ul class="feed-list" id="feedList"></ul>
     </div>
   </div>
 
   <script>
-    // Comprehensive protein per 100g database
-    const foodDatabase = [
-      { keys: ["muesli"], protein: 11.0 },
-      { keys: ["mutton curry", "mutton gravy", "lamb curry"], protein: 16.5 },
-      { keys: ["mutton", "lamb", "goat meat"], protein: 25.0 },
-      { keys: ["chicken curry", "chicken gravy"], protein: 17.0 },
-      { keys: ["chicken breast"], protein: 31.0 },
-      { keys: ["chicken"], protein: 27.0 },
-      { keys: ["oats", "rolled oats", "oatmeal"], protein: 13.5 },
-      { keys: ["greek yogurt"], protein: 10.0 },
-      { keys: ["curd", "yogurt", "dahi"], protein: 3.5 },
-      { keys: ["paneer", "cottage cheese"], protein: 18.0 },
-      { keys: ["tofu"], protein: 17.0 },
-      { keys: ["egg white"], protein: 11.0 },
-      { keys: ["egg", "boiled egg"], protein: 13.0 },
-      { keys: ["peanut butter"], protein: 25.0 },
-      { keys: ["whey", "whey protein"], protein: 80.0 },
-      { keys: ["plant protein", "pea protein"], protein: 75.0 },
-      { keys: ["dal", "daal", "lentil", "lentils"], protein: 6.5 },
-      { keys: ["chana", "chickpeas", "chole"], protein: 8.9 },
-      { keys: ["rajma", "kidney beans"], protein: 8.7 },
-      { keys: ["soya chunks", "soy chunks"], protein: 52.0 },
-      { keys: ["milk"], protein: 3.4 },
-      { keys: ["almonds"], protein: 21.0 },
-      { keys: ["chia seeds"], protein: 16.5 },
-      { keys: ["rice", "white rice", "cooked rice"], protein: 2.7 }
+    // Standard Macro Database (values per 100g)
+    const macroDB = [
+      { keys: ["oats", "rolled oats", "oatmeal"], p: 13.5, c: 68.0, f: 6.5 },
+      { keys: ["muesli"], p: 11.0, c: 66.0, f: 5.5 },
+      { keys: ["mutton curry", "mutton gravy", "lamb curry"], p: 16.5, c: 4.5, f: 12.0 },
+      { keys: ["mutton", "lamb", "goat meat"], p: 25.0, c: 0.0, f: 18.0 },
+      { keys: ["chicken breast"], p: 31.0, c: 0.0, f: 3.6 },
+      { keys: ["chicken curry", "chicken gravy"], p: 17.0, c: 4.0, f: 9.0 },
+      { keys: ["chicken"], p: 27.0, c: 0.0, f: 7.5 },
+      { keys: ["greek yogurt"], p: 10.0, c: 3.6, f: 0.4 },
+      { keys: ["curd", "yogurt", "dahi"], p: 3.5, c: 4.7, f: 3.2 },
+      { keys: ["paneer", "cottage cheese"], p: 18.0, c: 3.0, f: 20.0 },
+      { keys: ["tofu"], p: 17.0, c: 2.0, f: 9.0 },
+      { keys: ["egg white"], p: 11.0, c: 0.7, f: 0.2 },
+      { keys: ["egg", "boiled egg"], p: 13.0, c: 1.1, f: 10.5 },
+      { keys: ["peanut butter"], p: 25.0, c: 20.0, f: 50.0 },
+      { keys: ["whey", "whey protein"], p: 80.0, c: 5.0, f: 3.0 },
+      { keys: ["plant protein"], p: 75.0, c: 8.0, f: 4.0 },
+      { keys: ["dal", "daal", "lentils"], p: 6.5, c: 18.0, f: 2.5 },
+      { keys: ["chana", "chickpeas"], p: 8.9, c: 27.0, f: 2.6 },
+      { keys: ["rajma", "kidney beans"], p: 8.7, c: 23.0, f: 0.5 },
+      { keys: ["soya chunks", "soy chunks"], p: 52.0, c: 33.0, f: 0.5 },
+      { keys: ["milk"], p: 3.4, c: 4.8, f: 3.5 },
+      { keys: ["almonds"], p: 21.0, c: 22.0, f: 49.0 },
+      { keys: ["chia seeds"], p: 16.5, c: 42.0, f: 30.7 },
+      { keys: ["rice", "white rice", "cooked rice"], p: 2.7, c: 28.0, f: 0.3 }
     ];
 
-    let logs = JSON.parse(localStorage.getItem('protein_logs')) || [];
-    let dailyGoal = parseInt(localStorage.getItem('protein_goal')) || 120;
+    // State
+    let allLogs = JSON.parse(localStorage.getItem('macro_tracker_logs')) || [];
+    let proteinGoal = 120;
+    let selectedDate = new Date().toISOString().split('T')[0];
     let currentMode = 'auto';
+    let currentView = 'daily';
 
-    document.getElementById('dailyGoal').value = dailyGoal;
-    document.getElementById('dailyGoal').addEventListener('change', (e) => {
-      dailyGoal = parseInt(e.target.value) || 120;
-      localStorage.setItem('protein_goal', dailyGoal);
-      render();
-    });
+    // Init Date input
+    document.getElementById('selectedDate').value = selectedDate;
 
-    function setMode(mode) {
+    function onDateChange() {
+      selectedDate = document.getElementById('selectedDate').value;
+      renderDaily();
+    }
+
+    function shiftDate(delta) {
+      const d = new Date(selectedDate);
+      d.setDate(d.getDate() + delta);
+      selectedDate = d.toISOString().split('T')[0];
+      document.getElementById('selectedDate').value = selectedDate;
+      renderDaily();
+    }
+
+    function setEntryMode(mode) {
       currentMode = mode;
-      document.getElementById('tabAuto').classList.toggle('active', mode === 'auto');
-      document.getElementById('tabManual').classList.toggle('active', mode === 'manual');
+      document.getElementById('btnModeAuto').classList.toggle('active', mode === 'auto');
+      document.getElementById('btnModeManual').classList.toggle('active', mode === 'manual');
       document.getElementById('autoInputs').style.display = mode === 'auto' ? 'block' : 'none';
       document.getElementById('manualInputs').style.display = mode === 'manual' ? 'block' : 'none';
       document.getElementById('statusMessage').textContent = '';
     }
 
+    function switchView(view) {
+      currentView = view;
+      document.querySelectorAll('.view-tab').forEach((t, i) => {
+        t.classList.toggle('active', (view === 'daily' && i === 0) || (view === 'weekly' && i === 1) || (view === 'monthly' && i === 2));
+      });
+
+      if (view === 'daily') {
+        document.getElementById('dailyView').style.display = 'flex';
+        document.getElementById('dashboardView').style.display = 'none';
+        renderDaily();
+      } else {
+        document.getElementById('dailyView').style.display = 'none';
+        document.getElementById('dashboardView').style.display = 'flex';
+        renderDashboard(view === 'weekly' ? 7 : 30);
+      }
+    }
+
     function findInLocalDB(query) {
       const q = query.toLowerCase().trim();
-      for (const item of foodDatabase) {
+      for (const item of macroDB) {
         if (item.keys.some(k => q === k || q.includes(k) || k.includes(q))) {
-          return item.protein;
+          return item;
         }
       }
       return null;
     }
 
-    async function queryOpenFoodFacts(itemQuery) {
+    async function queryOpenFoodFacts(query) {
       try {
-        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(itemQuery)}&search_simple=1&action=process&json=1&page_size=5`);
+        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=5`);
         const data = await res.json();
         if (data.products && data.products.length > 0) {
-          const validProduct = data.products.find(p => p.nutriments?.proteins_100g !== undefined && p.nutriments?.proteins_100g !== null);
-          if (validProduct) {
-            return parseFloat(validProduct.nutriments.proteins_100g);
-          }
+          const p = data.products[0];
+          return {
+            p: parseFloat(p.nutriments?.proteins_100g || 0),
+            c: parseFloat(p.nutriments?.carbohydrates_100g || 0),
+            f: parseFloat(p.nutriments?.fat_100g || 0)
+          };
         }
       } catch (err) {
-        console.warn("API lookup failed:", err);
+        console.warn(err);
       }
       return null;
     }
 
-    async function handleLogFood(event) {
-      event.preventDefault();
+    async function handleFoodSubmit(e) {
+      e.preventDefault();
       const status = document.getElementById('statusMessage');
 
       if (currentMode === 'manual') {
-        const name = document.getElementById('manualName').value.trim() || 'Custom Item';
-        const protein = parseFloat(document.getElementById('manualProtein').value);
-
-        if (isNaN(protein) || protein <= 0) {
-          status.textContent = 'Please enter a valid protein amount.';
-          return;
-        }
-
-        addLogEntry(name, protein, 'Manual Entry');
-        document.getElementById('manualName').value = '';
-        document.getElementById('manualProtein').value = '';
-        status.textContent = '';
-        return;
-      }
-
-      const query = document.getElementById('foodSearch').value.trim();
-      const grams = parseFloat(document.getElementById('foodAmount').value);
-
-      if (!query || isNaN(grams) || grams <= 0) {
-        status.textContent = 'Please enter food name and grams.';
-        return;
-      }
-
-      status.textContent = 'Looking up nutrition info...';
-
-      // 1. Local Database lookup
-      const localProteinPer100g = findInLocalDB(query);
-      if (localProteinPer100g !== null) {
-        const calculated = (localProteinPer100g * (grams / 100));
-        addLogEntry(query, calculated, `${grams}g • ${localProteinPer100g}g/100g`);
-        document.getElementById('foodSearch').value = '';
-        status.textContent = '';
-        return;
-      }
-
-      // 2. Web API lookup
-      const webProteinPer100g = await queryOpenFoodFacts(query);
-      if (webProteinPer100g !== null) {
-        const calculated = (webProteinPer100g * (grams / 100));
-        addLogEntry(query, calculated, `${grams}g • Web Data`);
-        document.getElementById('foodSearch').value = '';
-        status.textContent = '';
-      } else {
-        status.textContent = `No entry found for "${query}". Use Manual Input.`;
-      }
-    }
-
-    function addLogEntry(name, protein, details) {
-      const entry = {
-        id: Date.now(),
-        name: name.charAt(0).toUpperCase() + name.slice(1),
-        protein: Math.round(protein * 10) / 10,
-        details: details,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-
-      logs.unshift(entry);
-      saveAndRender();
-    }
-
-    function removeLog(id) {
-      logs = logs.filter(item => item.id !== id);
-      saveAndRender();
-    }
-
-    function clearToday() {
-      if (confirm('Clear all logged meals for today?')) {
-        logs = [];
-        saveAndRender();
-      }
-    }
-
-    function saveAndRender() {
-      localStorage.setItem('protein_logs', JSON.stringify(logs));
-      render();
-    }
-
-    function render() {
-      const totalProtein = logs.reduce((sum, item) => sum + item.protein, 0);
-      const roundedTotal = Math.round(totalProtein * 10) / 10;
-      const remaining = Math.max(0, Math.round((dailyGoal - roundedTotal) * 10) / 10);
-      const pct = Math.min(Math.round((roundedTotal / dailyGoal) * 100), 100);
-
-      document.getElementById('totalLogged').innerHTML = `${roundedTotal} <span>g</span>`;
-      document.getElementById('totalRemaining').innerHTML = `${remaining} <span>g</span>`;
-      document.getElementById('percentDisplay').textContent = `${pct}% Achieved`;
-      document.getElementById('itemsLoggedCount').textContent = `${logs.length} ${logs.length === 1 ? 'Item' : 'Items'}`;
-      document.getElementById('progressBar').style.width = `${pct}%`;
-
-      const list = document.getElementById('feedList');
-      list.innerHTML = '';
-
-      if (logs.length === 0) {
-        list.innerHTML = `<li class="empty-state">No meals tracked today yet.</li>`;
-        return;
-      }
-
-      logs.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'feed-item';
-        li.innerHTML = `
-          <div class="item-left">
-            <span class="item-title">${item.name}</span>
-            <span class="item-meta">${item.details} • ${item.time}</span>
-          </div>
-          <div class="item-right">
-            <span class="item-protein-val">+${item.protein}g</span>
-            <button class="btn-delete" onclick="removeLog(${item.id})" title="Delete">&times;</button>
-          </div>
-        `;
-        list.appendChild(li);
-      });
-    }
-
-    render();
-  </script>
-</body>
-</html>
+        const name = document.getElementById('manualName').value.trim() || 'Custom Meal';
+        const p = parseFloat(document.getElementById('manP').value) || 0;
+        const c = parseFloat(document.getElementById('manC').value) ||
