@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Protein Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --primary: #38bdf8;
+      --primary-hover: #0ea5e9;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .goal-config {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .goal-config input {
+      width: 70px;
+      padding: 0.3rem 0.5rem;
+      background: var(--bg-main);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 6px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .current-val {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .current-val span {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 14px;
+      background: #334155;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #22c55e);
+      border-radius: 999px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .mode-toggle {
+      display: flex;
+      background: var(--bg-main);
+      border-radius: 8px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 1.25rem;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      background: var(--card-bg);
+      color: var(--primary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    input, select {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      background: var(--bg-main);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid var(--primary);
+      border-color: transparent;
+    }
+
+    .qty-input {
+      max-width: 130px;
+    }
+
+    button.btn-submit {
+      background: var(--primary);
+      color: #0f172a;
+      border: none;
+      padding: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button.btn-submit:hover {
+      background: var(--primary-hover);
+    }
+
+    .status-msg {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      min-height: 1.2rem;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .history-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-main);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    .item-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-name {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .item-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .item-protein {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color 0.2s;
+    }
+
+    .delete-btn:hover {
+      color: var(--danger);
+    }
+
+    .clear-btn {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .clear-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+      <header>
+        <h1>Protein Tracker</h1>
+        <div class="goal-config">
+          <label for="dailyGoal">Daily Target:</label>
+          <input type="number" id="dailyGoal" value="120" min="10" max="400">
+          <span>g</span>
+        </div>
+      </header>
+
+      <div class="progress-section" style="margin-top: 1.5rem;">
+        <div class="progress-stats">
+          <div class="current-val" id="totalDisplay">0.0 <span>g consumed</span></div>
+          <div id="percentageDisplay" style="font-weight: 600; color: var(--text-muted);">0%</div>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="btnAutoMode" onclick="setMode('auto')">Auto Lookup (Web / DB)</button>
+        <button class="mode-btn" id="btnManualMode" onclick="setMode('manual')">Manual Entry</button>
+      </div>
+
+      <form id="foodForm" onsubmit="handleLogFood(event)">
+        <div id="autoInputs">
+          <div class="form-group">
+            <input type="text" id="foodSearch" placeholder="e.g. Oats, Greek Yogurt, Chicken Breast, Paneer..." autocomplete="off">
+            <input type="number" id="foodAmount" class="qty-input" placeholder="Grams" value="100" min="1">
+          </div>
+        </div>
+
+        <div id="manualInputs" style="display: none;">
+          <div class="form-group">
+            <input type="text" id="manualName" placeholder="e.g. Protein Oats Smoothie / Whey Scoop">
+            <input type="number" id="manualProtein" class="qty-input" placeholder="Protein (g)" step="0.1" min="0">
+          </div>
+        </div>
+
+        <div class="status-msg" id="statusMessage"></div>
+        <button type="submit" class="btn-submit" id="submitBtn">+ Add to Log</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="history-header">
+        <h2 style="font-size: 1.15rem; font-weight: 600;">Today's Log</h2>
+        <button class="clear-btn" onclick="clearToday()">Reset Day</button>
+      </div>
+      <ul class="history-list" id="historyList">
+        </ul>
+    </div>
+  </div>
+
+  <script>
+    // Local nutrition database (grams of protein per 100g or standard unit)
+    const localDatabase = {
+      "oats": 13.5,
+      "rolled oats": 13.5,
+      "greek yogurt": 10.0,
+      "yogurt": 3.5,
+      "chicken breast": 31.0,
+      "chicken": 27.0,
+      "paneer": 18.0,
+      "tofu": 17.0,
+      "egg": 6.0,          // standard 1 unit (assumes ~50g egg = ~12g/100g)
+      "eggs": 6.0,
+      "egg white": 11.0,
+      "peanut butter": 25.0,
+      "milk": 3.4,
+      "almonds": 21.0,
+      "chia seeds": 16.5,
+      "whey protein": 80.0,
+      "plant protein": 75.0,
+      "rice": 2.7,
+      "lentils": 9.0,
+      "chana": 19.0
+    };
+
+    let logs = JSON.parse(localStorage.getItem('protein_logs')) || [];
+    let dailyGoal = parseInt(localStorage.getItem('protein_goal')) || 120;
+    let currentMode = 'auto';
+
+    document.getElementById('dailyGoal').value = dailyGoal;
+    document.getElementById('dailyGoal').addEventListener('change', (e) => {
+      dailyGoal = parseInt(e.target.value) || 120;
+      localStorage.setItem('protein_goal', dailyGoal);
+      render();
+    });
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('btnAutoMode').classList.toggle('active', mode === 'auto');
+      document.getElementById('btnManualMode').classList.toggle('active', mode === 'manual');
+      document.getElementById('autoInputs').style.display = mode === 'auto' ? 'block' : 'none';
+      document.getElementById('manualInputs').style.display = mode === 'manual' ? 'block' : 'none';
+      document.getElementById('statusMessage').textContent = '';
+    }
+
+    async function queryOpenFoodFacts(itemQuery) {
+      try {
+        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(itemQuery)}&search_simple=1&action=process&json=1&page_size=1`);
+        const data = await res.json();
+        if (data.products && data.products.length > 0) {
+          const product = data.products[0];
+          const proteins100g = product.nutriments?.proteins_100g;
+          if (proteins100g !== undefined && proteins100g !== null) {
+            return {
+              name: product.product_name || itemQuery,
+              proteinPer100g: parseFloat(proteins100g)
+            };
+          }
+        }
+      } catch (err) {
+        console.warn("API lookup failed, falling back to local database.", err);
+      }
+      return null;
+    }
+
+    async function handleLogFood(event) {
+      event.preventDefault();
+      const status = document.getElementById('statusMessage');
+
+      if (currentMode === 'manual') {
+        const name = document.getElementById('manualName').value.trim() || 'Custom Item';
+        const protein = parseFloat(document.getElementById('manualProtein').value);
+
+        if (isNaN(protein) || protein <= 0) {
+          status.textContent = 'Please enter a valid protein amount.';
+          return;
+        }
+
+        addLogEntry(name, protein, 'Manual Entry');
+        document.getElementById('manualName').value = '';
+        document.getElementById('manualProtein').value = '';
+        status.textContent = '';
+        return;
+      }
+
+      // Auto Mode
+      const query = document.getElementById('foodSearch').value.trim();
+      const grams = parseFloat(document.getElementById('foodAmount').value);
+
+      if (!query || isNaN(grams) || grams <= 0) {
+        status.textContent = 'Please enter a valid food name and weight in grams.';
+        return;
+      }
+
+      status.textContent = 'Searching nutrition database...';
+      const cleanKey = query.toLowerCase();
+
+      // Check local DB first for quick response
+      if (localDatabase[cleanKey]) {
+        const proteinCalculated = (localDatabase[cleanKey] * (grams / 100));
+        addLogEntry(query, proteinCalculated, `${grams}g (Local DB)`);
+        document.getElementById('foodSearch').value = '';
+        status.textContent = '';
+        return;
+      }
+
+      // Query Open Food Facts API
+      const apiResult = await queryOpenFoodFacts(query);
+      if (apiResult) {
+        const proteinCalculated = (apiResult.proteinPer100g * (grams / 100));
+        addLogEntry(apiResult.name, proteinCalculated, `${grams}g (Web: ${apiResult.proteinPer100g}g/100g)`);
+        document.getElementById('foodSearch').value = '';
+        status.textContent = '';
+      } else {
+        // Estimation fallback
+        status.textContent = 'Could not find online data. Please use Manual Entry for this item.';
+      }
+    }
+
+    function addLogEntry(name, protein, details) {
+      const entry = {
+        id: Date.now(),
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        protein: Math.round(protein * 10) / 10,
+        details: details,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      logs.unshift(entry);
+      saveAndRender();
+    }
+
+    function removeLog(id) {
+      logs = logs.filter(item => item.id !== id);
+      saveAndRender();
+    }
+
+    function clearToday() {
+      if (confirm('Are you sure you want to clear all logged meals for today?')) {
+        logs = [];
+        saveAndRender();
+      }
+    }
+
+    function saveAndRender() {
+      localStorage.setItem('protein_logs', JSON.stringify(logs));
+      render();
+    }
+
+    function render() {
+      const totalProtein = logs.reduce((sum, item) => sum + item.protein, 0);
+      const roundedTotal = Math.round(totalProtein * 10) / 10;
+      const pct = Math.min(Math.round((roundedTotal / dailyGoal) * 100), 100);
+
+      document.getElementById('totalDisplay').innerHTML = `${roundedTotal} <span>/ ${dailyGoal}g</span>`;
+      document.getElementById('percentageDisplay').textContent = `${pct}%`;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+
+      const list = document.getElementById('historyList');
+      list.innerHTML = '';
+
+      if (logs.length === 0) {
+        list.innerHTML = `<li style="text-align: center; color: var(--text-muted); padding: 1rem 0; font-size: 0.9rem;">No items logged yet today.</li>`;
+        return;
+      }
+
+      logs.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerHTML = `
+          <div class="item-meta">
+            <span class="item-name">${item.name}</span>
+            <span class="item-sub">${item.details} • ${item.time}</span>
+          </div>
+          <div class="item-actions">
+            <span class="item-protein">+${item.protein}g</span>
+            <button class="delete-btn" onclick="removeLog(${item.id})" title="Delete entry">&times;</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
