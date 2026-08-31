@@ -17,6 +17,7 @@
       --text-muted: #64748B;
       --accent: #3B82F6;
       --success: #10B981;
+      --partial: #F59E0B; /* Amber for partial progress */
       --cell-empty: #E2E8F0;
       --radius: 16px;
       --transition: all 0.15s ease-in-out;
@@ -440,7 +441,7 @@
     }
 
     .day-check-btn {
-      height: 72px;
+      height: 76px;
       border-radius: 12px;
       border: 1.5px solid var(--card-border);
       background: var(--card-bg);
@@ -453,6 +454,7 @@
       transition: var(--transition);
       outline: none;
       position: relative;
+      overflow: hidden;
     }
 
     .day-check-btn * {
@@ -478,7 +480,7 @@
     }
 
     .day-val-tag {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 700;
       color: var(--text-muted);
       background: #F1F5F9;
@@ -495,19 +497,60 @@
       border: 2px solid var(--accent);
     }
 
-    .day-check-btn.checked {
+    /* Target Achieved: Full Green */
+    .day-check-btn.completed {
       background-color: var(--success) !important;
       border-color: var(--success) !important;
     }
 
-    .day-check-btn.checked .day-label,
-    .day-check-btn.checked .day-date {
+    .day-check-btn.completed .day-label,
+    .day-check-btn.completed .day-date {
       color: #FFFFFF !important;
     }
 
-    .day-check-btn.checked .day-val-tag {
+    .day-check-btn.completed .day-val-tag {
       background: rgba(255, 255, 255, 0.25) !important;
       color: #FFFFFF !important;
+    }
+
+    /* Target Incomplete / Partial: Amber */
+    .day-check-btn.partial {
+      background-color: var(--partial) !important;
+      border-color: var(--partial) !important;
+    }
+
+    .day-check-btn.partial .day-label,
+    .day-check-btn.partial .day-date {
+      color: #FFFFFF !important;
+    }
+
+    .day-check-btn.partial .day-val-tag {
+      background: rgba(255, 255, 255, 0.25) !important;
+      color: #FFFFFF !important;
+    }
+
+    /* Target Progress Mini-Meter on the bottom of card */
+    .day-meter-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #E2E8F0;
+    }
+
+    .day-meter-fill {
+      height: 100%;
+      background: var(--success);
+      transition: width 0.2s ease;
+    }
+
+    .day-check-btn.partial .day-meter-fill {
+      background: #D97706;
+    }
+
+    .day-check-btn.completed .day-meter-fill {
+      background: #059669;
     }
 
     /* 30-Day Heatmap Mini-Bar */
@@ -528,11 +571,15 @@
       transition: var(--transition);
     }
 
-    .heatmap-box.active {
+    .heatmap-box.completed {
       background: var(--success);
     }
 
-    /* Modal Overlay & Card */
+    .heatmap-box.partial {
+      background: var(--partial);
+    }
+
+    /* Modal Styles (General) */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -690,6 +737,7 @@
       transition: var(--transition);
       color: var(--text);
       user-select: none;
+      position: relative;
     }
 
     .cal-day-cell.empty {
@@ -700,8 +748,14 @@
       background: #E2E8F0;
     }
 
-    .cal-day-cell.done {
-      background: #2563EB !important;
+    .cal-day-cell.completed {
+      background: var(--success) !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    .cal-day-cell.partial {
+      background: var(--partial) !important;
       color: #fff !important;
       font-weight: 700;
     }
@@ -709,6 +763,27 @@
     .cal-day-cell.today-circle {
       box-shadow: 0 0 0 2px var(--accent);
     }
+
+    /* Target feedback bar inside log popup */
+    .log-target-preview {
+      background: #F1F5F9;
+      border-radius: 10px;
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-badge-preview {
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .status-badge-preview.met { background: #DCFCE7; color: #15803D; }
+    .status-badge-preview.under { background: #FEF3C7; color: #B45309; }
 
     /* Modal Form Inputs */
     .form-group {
@@ -786,33 +861,36 @@
       </div>
     </header>
 
+    <!-- Visual Dashboard Overview -->
     <div class="overview-card" id="overview-card">
       <div class="overview-header">
         <div class="overview-title">📊 Habits Performance Overview</div>
-        <div class="overview-month-pill" id="overview-month-tag">Aug 2026</div>
+        <div class="overview-month-pill" id="overview-month-tag">Month 2026</div>
       </div>
 
       <div class="overview-stats">
         <div class="ov-box">
-          <span class="ov-label">This Month Completed</span>
-          <span class="ov-value" id="ov-total-month">0 check-ins</span>
-          <span class="ov-sub" id="ov-month-rate">0% overall consistency</span>
+          <span class="ov-label">Month Target Achieved</span>
+          <span class="ov-value" id="ov-total-month">0 goals</span>
+          <span class="ov-sub" id="ov-month-rate">0% full goal rate</span>
         </div>
         <div class="ov-box">
-          <span class="ov-label">Top Habit</span>
+          <span class="ov-label">Top Performer</span>
           <span class="ov-value" id="ov-top-habit">—</span>
-          <span class="ov-sub" id="ov-top-habit-stat">0 days done</span>
+          <span class="ov-sub" id="ov-top-habit-stat">0 days on target</span>
         </div>
       </div>
 
+      <!-- Weekly Habit Activity Graph -->
       <div class="weekly-bars-container">
         <div class="weekly-bars-title">
-          <span>7-Day Activity Trend</span>
+          <span>7-Day Goal Compliance</span>
           <span id="ov-week-rate">0% this week</span>
         </div>
         <div class="weekly-bars" id="overview-weekly-bars"></div>
       </div>
 
+      <!-- Habit by Habit Progress Bars & Numeric Totals -->
       <div class="habit-progress-breakdown" id="overview-habit-breakdown"></div>
     </div>
 
@@ -820,6 +898,7 @@
     <div class="habit-list" id="habit-list"></div>
   </div>
 
+  <!-- Monthly Stats Modal -->
   <div class="modal-overlay" id="stats-modal">
     <div class="modal-card">
       <div class="modal-top">
@@ -837,7 +916,7 @@
           <span class="stat-val" id="stat-month-total">0</span>
         </div>
         <div class="stat-tile pink">
-          <span class="stat-label">Month Rate</span>
+          <span class="stat-label">Goal Hit Rate</span>
           <span class="stat-val" id="stat-month-rate">0%</span>
         </div>
       </div>
@@ -857,6 +936,7 @@
     </div>
   </div>
 
+  <!-- Log Value / Numeric Input Modal -->
   <div class="modal-overlay" id="log-modal">
     <div class="modal-card">
       <div class="modal-top">
@@ -864,18 +944,23 @@
         <button class="modal-close" onclick="closeModal('log-modal')">✕</button>
       </div>
       <form id="log-form" onsubmit="handleLogSubmit(event)">
-        <div class="form-group">
+        <div class="log-target-preview" id="log-target-info">
+          <span id="log-target-text">Daily Target: 30 mins</span>
+          <span class="status-badge-preview under" id="log-status-badge">Partial (< 30)</span>
+        </div>
+        <div class="form-group" style="margin-top: 0.75rem;">
           <label class="form-label" id="log-input-label">Enter amount:</label>
-          <input type="number" step="any" class="form-input" id="log-input-val" required autofocus />
+          <input type="number" step="any" class="form-input" id="log-input-val" required autofocus oninput="updateLiveTargetStatus()" />
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
           <button type="submit" class="btn-submit">Save Entry</button>
-          <button type="button" class="btn-clear-entry" id="btn-clear-entry" onclick="handleClearEntry()">Clear / Uncheck Day</button>
+          <button type="button" class="btn-clear-entry" id="btn-clear-entry" onclick="handleClearEntry()">Clear Day</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- Add New Habit Modal -->
   <div class="modal-overlay" id="add-habit-modal">
     <div class="modal-card">
       <div class="modal-top">
@@ -966,7 +1051,7 @@
 
     let habits = [];
     try {
-      const stored = localStorage.getItem('habits_box_data_v2');
+      const stored = localStorage.getItem('habits_box_data_v3');
       if (stored) habits = JSON.parse(stored);
     } catch(e) {
       habits = [];
@@ -995,7 +1080,7 @@
 
     function saveState() {
       try {
-        localStorage.setItem('habits_box_data_v2', JSON.stringify(habits));
+        localStorage.setItem('habits_box_data_v3', JSON.stringify(habits));
       } catch(e) {}
       render();
       if (selectedHabitId) renderModal();
@@ -1030,13 +1115,19 @@
       return dates;
     }
 
-    function isDayCompleted(habit, dateStr) {
-      if (!habit.history || habit.history[dateStr] === undefined) return false;
+    // Goal Evaluation Logic: 'none', 'partial', 'completed'
+    function getDayGoalStatus(habit, dateStr) {
+      if (!habit.history || habit.history[dateStr] === undefined) return 'none';
       const val = habit.history[dateStr];
       if (habit.type === 'numeric') {
-        return Number(val) > 0;
+        const numVal = Number(val) || 0;
+        if (numVal <= 0) return 'none';
+        if (habit.target && habit.target > 0) {
+          return numVal >= habit.target ? 'completed' : 'partial';
+        }
+        return 'completed';
       }
-      return Boolean(val);
+      return Boolean(val) ? 'completed' : 'none';
     }
 
     function calculateStreak(habit) {
@@ -1045,13 +1136,13 @@
       let d = new Date();
       let todayStr = formatDate(d);
 
-      if (!isDayCompleted(habit, todayStr)) {
+      if (getDayGoalStatus(habit, todayStr) === 'none') {
         d.setDate(d.getDate() - 1);
       }
 
       while (true) {
         const checkStr = formatDate(d);
-        if (isDayCompleted(habit, checkStr)) {
+        if (getDayGoalStatus(habit, checkStr) !== 'none') {
           streak++;
           d.setDate(d.getDate() - 1);
         } else {
@@ -1063,7 +1154,7 @@
 
     function calculateBestStreak(habit) {
       if (!habit.history) return 0;
-      const sortedDates = Object.keys(habit.history).filter(d => isDayCompleted(habit, d)).sort();
+      const sortedDates = Object.keys(habit.history).filter(d => getDayGoalStatus(habit, d) !== 'none').sort();
       if (sortedDates.length === 0) return 0;
 
       let maxStreak = 1;
@@ -1152,10 +1243,16 @@
         activeLogContext = { habitId, dateStr };
         const currentVal = habit.history[dateStr] || '';
         document.getElementById('log-modal-title').innerText = `${habit.icon} ${habit.name} (${dateStr})`;
-        document.getElementById('log-input-label').innerText = `Enter ${habit.unit ? habit.unit : 'amount'} (Daily target: ${habit.target || 'None'}):`;
+        document.getElementById('log-input-label').innerText = `Enter ${habit.unit ? habit.unit : 'amount'}:`;
+        
+        const targetText = habit.target ? `Daily Target: ${habit.target} ${habit.unit}` : 'No target set';
+        document.getElementById('log-target-text').innerText = targetText;
+        
         const input = document.getElementById('log-input-val');
         input.value = currentVal;
         input.placeholder = habit.target ? `e.g. ${habit.target}` : '0';
+        updateLiveTargetStatus();
+
         document.getElementById('log-modal').classList.add('open');
         setTimeout(() => input.focus(), 100);
       } else {
@@ -1165,6 +1262,32 @@
           habit.history[dateStr] = true;
         }
         saveState();
+      }
+    }
+
+    function updateLiveTargetStatus() {
+      const { habitId } = activeLogContext;
+      const habit = habits.find(h => h.id === habitId);
+      if (!habit) return;
+
+      const val = parseFloat(document.getElementById('log-input-val').value) || 0;
+      const badge = document.getElementById('log-status-badge');
+
+      if (!habit.target || habit.target <= 0) {
+        badge.innerText = 'Active';
+        badge.className = 'status-badge-preview met';
+        return;
+      }
+
+      if (val >= habit.target) {
+        badge.innerText = `Goal Met (>= ${habit.target})`;
+        badge.className = 'status-badge-preview met';
+      } else if (val > 0) {
+        badge.innerText = `Partial (< ${habit.target})`;
+        badge.className = 'status-badge-preview under';
+      } else {
+        badge.innerText = `Not Completed`;
+        badge.className = 'status-badge-preview under';
       }
     }
 
@@ -1206,21 +1329,26 @@
       const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
       const totalHabits = habits.length;
 
-      let totalMonthCheckins = 0;
+      let totalMonthTargetMet = 0;
       let habitMonthStats = [];
 
       const recent7Days = getLast7Days();
 
       habits.forEach(habit => {
-        let habitCount = 0;
+        let fullGoalCount = 0;
+        let anyActivityCount = 0;
         let monthTotalAmount = 0;
         let weekTotalAmount = 0;
 
         for (let day = 1; day <= totalDaysInMonth; day++) {
           const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-          if (isDayCompleted(habit, dStr)) {
-            habitCount++;
-            totalMonthCheckins++;
+          const status = getDayGoalStatus(habit, dStr);
+          if (status === 'completed') {
+            fullGoalCount++;
+            totalMonthTargetMet++;
+          }
+          if (status !== 'none') {
+            anyActivityCount++;
             if (habit.type === 'numeric') {
               monthTotalAmount += Number(habit.history[dStr]) || 0;
             }
@@ -1228,7 +1356,7 @@
         }
 
         recent7Days.forEach(dateStr => {
-          if (isDayCompleted(habit, dateStr) && habit.type === 'numeric') {
+          if (getDayGoalStatus(habit, dateStr) !== 'none' && habit.type === 'numeric') {
             weekTotalAmount += Number(habit.history[dateStr]) || 0;
           }
         });
@@ -1241,33 +1369,34 @@
           type: habit.type,
           unit: habit.unit,
           target: habit.target,
-          count: habitCount,
+          fullCount: fullGoalCount,
+          activityCount: anyActivityCount,
           monthTotal: monthTotalAmount,
           weekTotal: weekTotalAmount,
-          rate: Math.round((habitCount / totalDaysInMonth) * 100)
+          rate: Math.round((fullGoalCount / totalDaysInMonth) * 100)
         });
       });
 
       const maxPossibleMonth = totalDaysInMonth * totalHabits;
-      const overallMonthRate = maxPossibleMonth > 0 ? Math.round((totalMonthCheckins / maxPossibleMonth) * 100) : 0;
+      const overallMonthRate = maxPossibleMonth > 0 ? Math.round((totalMonthTargetMet / maxPossibleMonth) * 100) : 0;
 
-      document.getElementById('ov-total-month').innerText = `${totalMonthCheckins} check-ins`;
-      document.getElementById('ov-month-rate').innerText = `${overallMonthRate}% month consistency`;
+      document.getElementById('ov-total-month').innerText = `${totalMonthTargetMet} goals met`;
+      document.getElementById('ov-month-rate').innerText = `${overallMonthRate}% full goal compliance`;
 
-      habitMonthStats.sort((a, b) => b.count - a.count);
+      habitMonthStats.sort((a, b) => b.fullCount - a.fullCount);
       const topHabit = habitMonthStats[0];
-      if (topHabit && topHabit.count > 0) {
+      if (topHabit && topHabit.fullCount > 0) {
         document.getElementById('ov-top-habit').innerText = `${topHabit.icon} ${topHabit.name}`;
-        document.getElementById('ov-top-habit-stat').innerText = `${topHabit.count} days completed`;
+        document.getElementById('ov-top-habit-stat').innerText = `${topHabit.fullCount} days 100% met`;
       } else {
         document.getElementById('ov-top-habit').innerText = `None yet`;
-        document.getElementById('ov-top-habit-stat').innerText = `0 days done`;
+        document.getElementById('ov-top-habit-stat').innerText = `0 days met`;
       }
 
       const weeklyBarsEl = document.getElementById('overview-weekly-bars');
       weeklyBarsEl.innerHTML = '';
 
-      let totalWeeklyChecks = 0;
+      let totalWeeklyFullGoals = 0;
       const maxPossibleWeek = 7 * totalHabits;
 
       recent7Days.forEach(dateStr => {
@@ -1275,18 +1404,18 @@
         const d = new Date(parts[0], parts[1] - 1, parts[2]);
         const dayName = weekDays[d.getDay()];
 
-        let dayCount = 0;
+        let dayFullCount = 0;
         habits.forEach(h => {
-          if (isDayCompleted(h, dateStr)) dayCount++;
+          if (getDayGoalStatus(h, dateStr) === 'completed') dayFullCount++;
         });
 
-        totalWeeklyChecks += dayCount;
-        const fillPercent = totalHabits > 0 ? Math.round((dayCount / totalHabits) * 100) : 0;
+        totalWeeklyFullGoals += dayFullCount;
+        const fillPercent = totalHabits > 0 ? Math.round((dayFullCount / totalHabits) * 100) : 0;
 
         const col = document.createElement('div');
         col.className = 'bar-col';
         col.innerHTML = `
-          <span class="bar-count">${dayCount}/${totalHabits}</span>
+          <span class="bar-count">${dayFullCount}/${totalHabits}</span>
           <div class="bar-track">
             <div class="bar-fill ${fillPercent === 100 ? 'full' : ''}" style="height: ${fillPercent}%;"></div>
           </div>
@@ -1295,8 +1424,8 @@
         weeklyBarsEl.appendChild(col);
       });
 
-      const weekConsistency = maxPossibleWeek > 0 ? Math.round((totalWeeklyChecks / maxPossibleWeek) * 100) : 0;
-      document.getElementById('ov-week-rate').innerText = `${weekConsistency}% weekly consistency`;
+      const weekConsistency = maxPossibleWeek > 0 ? Math.round((totalWeeklyFullGoals / maxPossibleWeek) * 100) : 0;
+      document.getElementById('ov-week-rate').innerText = `${weekConsistency}% goals met this week`;
 
       const breakdownEl = document.getElementById('overview-habit-breakdown');
       breakdownEl.innerHTML = '';
@@ -1305,15 +1434,15 @@
         const row = document.createElement('div');
         row.className = 'habit-prog-row';
 
-        let subDetail = `${item.count}/${totalDaysInMonth} days active (${item.rate}%)`;
+        let subDetail = `${item.fullCount}/${totalDaysInMonth} days target met (${item.rate}%)`;
         if (item.type === 'numeric') {
-          subDetail = `Week: <strong>${Math.round(item.weekTotal * 10)/10} ${item.unit}</strong> | Month: <strong>${Math.round(item.monthTotal * 10)/10} ${item.unit}</strong> (${item.count} days)`;
+          subDetail = `Week: <strong>${Math.round(item.weekTotal * 10)/10} ${item.unit}</strong> | Month: <strong>${Math.round(item.monthTotal * 10)/10} ${item.unit}</strong> (${item.fullCount}d on-target)`;
         }
 
         row.innerHTML = `
           <div class="habit-prog-label">
             <span>${item.icon} ${escapeHtml(item.name)}</span>
-            <span>${item.rate}%</span>
+            <span>${item.rate}% target met</span>
           </div>
           <div class="habit-prog-track">
             <div class="habit-prog-fill" style="width: ${item.rate}%; background-color: ${item.color};"></div>
@@ -1367,6 +1496,7 @@
         const statsBtn = header.querySelector(`#btn-stats-${habit.id}`);
         statsBtn.addEventListener('click', () => openModal(habit.id));
 
+        // 7-Day Buttons with Colored Target Indicators
         const checkRow = document.createElement('div');
         checkRow.className = 'habit-checkbox-row';
 
@@ -1374,26 +1504,38 @@
           const parts = dateStr.split('-');
           const d = new Date(parts[0], parts[1] - 1, parts[2]);
           const dayName = weekDays[d.getDay()];
-          const isDone = isDayCompleted(habit, dateStr);
+          const status = getDayGoalStatus(habit, dateStr);
           const isToday = (dateStr === todayStr);
 
           let valBadge = '';
+          let meterPercent = 0;
+
           if (habit.type === 'numeric') {
             const rawVal = habit.history ? habit.history[dateStr] : null;
             if (rawVal !== undefined && rawVal !== null) {
               valBadge = `<span class="day-val-tag">${rawVal} ${habit.unit}</span>`;
+              if (habit.target && habit.target > 0) {
+                meterPercent = Math.min(100, Math.round((Number(rawVal) / habit.target) * 100));
+              } else {
+                meterPercent = 100;
+              }
             } else {
               valBadge = `<span class="day-val-tag">+</span>`;
             }
+          } else {
+            meterPercent = (status === 'completed') ? 100 : 0;
           }
 
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = `day-check-btn ${isDone ? 'checked' : ''} ${isToday ? 'today' : ''}`;
+          btn.className = `day-check-btn ${status} ${isToday ? 'today' : ''}`;
           btn.innerHTML = `
             <span class="day-label">${dayName}</span>
             <span class="day-date">${d.getDate()}</span>
             ${valBadge}
+            <div class="day-meter-track">
+              <div class="day-meter-fill" style="width: ${meterPercent}%;"></div>
+            </div>
           `;
           
           btn.addEventListener('click', (e) => {
@@ -1404,14 +1546,15 @@
           checkRow.appendChild(btn);
         });
 
+        // 30-Day Heatmap with Amber/Green Coloring
         const heatmap = document.createElement('div');
         heatmap.className = 'heatmap-cells';
         recent30Days.forEach(dateStr => {
-          const isDone = isDayCompleted(habit, dateStr);
+          const status = getDayGoalStatus(habit, dateStr);
           const box = document.createElement('div');
-          box.className = `heatmap-box ${isDone ? 'active' : ''}`;
+          box.className = `heatmap-box ${status}`;
           const val = habit.history ? habit.history[dateStr] : null;
-          box.title = val ? `${dateStr}: ${val} ${habit.unit || ''}` : dateStr;
+          box.title = val ? `${dateStr}: ${val} ${habit.unit || ''} (${status})` : dateStr;
           
           box.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1450,11 +1593,12 @@
 
       for (let day = 1; day <= totalDaysInMonth; day++) {
         const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        if (isDayCompleted(habit, dStr)) {
+        const status = getDayGoalStatus(habit, dStr);
+        if (status === 'completed') {
           monthCompletedDays++;
-          if (habit.type === 'numeric') {
-            monthTotalAmount += Number(habit.history[dStr]) || 0;
-          }
+        }
+        if (status !== 'none' && habit.type === 'numeric') {
+          monthTotalAmount += Number(habit.history[dStr]) || 0;
         }
       }
 
@@ -1467,7 +1611,7 @@
         document.getElementById('stat-total-label').innerText = `Total (${habit.unit})`;
         document.getElementById('stat-month-total').innerText = `${Math.round(monthTotalAmount * 10)/10}`;
       } else {
-        document.getElementById('stat-total-label').innerText = `Month Count`;
+        document.getElementById('stat-total-label').innerText = `Goals Met`;
         document.getElementById('stat-month-total').innerText = `${monthCompletedDays}d`;
       }
 
@@ -1487,11 +1631,11 @@
 
       for (let day = 1; day <= totalDaysInMonth; day++) {
         const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const isDone = isDayCompleted(habit, dStr);
+        const status = getDayGoalStatus(habit, dStr);
         const isToday = (dStr === todayStr);
 
         const cell = document.createElement('div');
-        cell.className = `cal-day-cell ${isDone ? 'done' : ''} ${isToday ? 'today-circle' : ''}`;
+        cell.className = `cal-day-cell ${status} ${isToday ? 'today-circle' : ''}`;
         cell.innerText = day;
 
         cell.addEventListener('click', () => {
