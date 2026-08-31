@@ -23,7 +23,6 @@
       --radius-lg: 16px;
       --radius-md: 10px;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
     }
 
     * {
@@ -59,7 +58,6 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* Top Navigation Tabs */
     .view-switcher {
       display: flex;
       background: #e2e8f0;
@@ -87,7 +85,6 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* Date Header */
     .date-bar {
       display: flex;
       justify-content: space-between;
@@ -117,7 +114,6 @@
       font-size: 0.9rem;
     }
 
-    /* Macro Card Grid */
     .macro-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -157,7 +153,6 @@
       margin-top: 0.2rem;
     }
 
-    /* Target Bars */
     .progress-bar-bg {
       width: 100%;
       height: 8px;
@@ -175,7 +170,6 @@
       transition: width 0.3s ease;
     }
 
-    /* Form Mode Switcher */
     .mode-pills {
       display: flex;
       gap: 0.5rem;
@@ -200,14 +194,13 @@
       color: var(--primary);
     }
 
-    /* Forms */
     .form-row {
       display: flex;
       gap: 0.5rem;
       margin-bottom: 0.6rem;
     }
 
-    input[type="text"], input[type="number"], select {
+    input[type="text"], input[type="number"] {
       flex: 1;
       padding: 0.7rem 0.85rem;
       border: 1px solid var(--border);
@@ -247,7 +240,6 @@
       margin-top: 0.35rem;
     }
 
-    /* Log Feed */
     .feed-header {
       display: flex;
       justify-content: space-between;
@@ -303,7 +295,6 @@
       color: var(--danger);
     }
 
-    /* Dashboard Analytics Section */
     .chart-container {
       display: flex;
       flex-direction: column;
@@ -475,7 +466,6 @@
   </div>
 
   <script>
-    // Standard Macro Database (values per 100g)
     const macroDB = [
       { keys: ["oats", "rolled oats", "oatmeal"], p: 13.5, c: 68.0, f: 6.5 },
       { keys: ["muesli"], p: 11.0, c: 66.0, f: 5.5 },
@@ -492,99 +482,4 @@
       { keys: ["egg", "boiled egg"], p: 13.0, c: 1.1, f: 10.5 },
       { keys: ["peanut butter"], p: 25.0, c: 20.0, f: 50.0 },
       { keys: ["whey", "whey protein"], p: 80.0, c: 5.0, f: 3.0 },
-      { keys: ["plant protein"], p: 75.0, c: 8.0, f: 4.0 },
-      { keys: ["dal", "daal", "lentils"], p: 6.5, c: 18.0, f: 2.5 },
-      { keys: ["chana", "chickpeas"], p: 8.9, c: 27.0, f: 2.6 },
-      { keys: ["rajma", "kidney beans"], p: 8.7, c: 23.0, f: 0.5 },
-      { keys: ["soya chunks", "soy chunks"], p: 52.0, c: 33.0, f: 0.5 },
-      { keys: ["milk"], p: 3.4, c: 4.8, f: 3.5 },
-      { keys: ["almonds"], p: 21.0, c: 22.0, f: 49.0 },
-      { keys: ["chia seeds"], p: 16.5, c: 42.0, f: 30.7 },
-      { keys: ["rice", "white rice", "cooked rice"], p: 2.7, c: 28.0, f: 0.3 }
-    ];
-
-    // State
-    let allLogs = JSON.parse(localStorage.getItem('macro_tracker_logs')) || [];
-    let proteinGoal = 120;
-    let selectedDate = new Date().toISOString().split('T')[0];
-    let currentMode = 'auto';
-    let currentView = 'daily';
-
-    // Init Date input
-    document.getElementById('selectedDate').value = selectedDate;
-
-    function onDateChange() {
-      selectedDate = document.getElementById('selectedDate').value;
-      renderDaily();
-    }
-
-    function shiftDate(delta) {
-      const d = new Date(selectedDate);
-      d.setDate(d.getDate() + delta);
-      selectedDate = d.toISOString().split('T')[0];
-      document.getElementById('selectedDate').value = selectedDate;
-      renderDaily();
-    }
-
-    function setEntryMode(mode) {
-      currentMode = mode;
-      document.getElementById('btnModeAuto').classList.toggle('active', mode === 'auto');
-      document.getElementById('btnModeManual').classList.toggle('active', mode === 'manual');
-      document.getElementById('autoInputs').style.display = mode === 'auto' ? 'block' : 'none';
-      document.getElementById('manualInputs').style.display = mode === 'manual' ? 'block' : 'none';
-      document.getElementById('statusMessage').textContent = '';
-    }
-
-    function switchView(view) {
-      currentView = view;
-      document.querySelectorAll('.view-tab').forEach((t, i) => {
-        t.classList.toggle('active', (view === 'daily' && i === 0) || (view === 'weekly' && i === 1) || (view === 'monthly' && i === 2));
-      });
-
-      if (view === 'daily') {
-        document.getElementById('dailyView').style.display = 'flex';
-        document.getElementById('dashboardView').style.display = 'none';
-        renderDaily();
-      } else {
-        document.getElementById('dailyView').style.display = 'none';
-        document.getElementById('dashboardView').style.display = 'flex';
-        renderDashboard(view === 'weekly' ? 7 : 30);
-      }
-    }
-
-    function findInLocalDB(query) {
-      const q = query.toLowerCase().trim();
-      for (const item of macroDB) {
-        if (item.keys.some(k => q === k || q.includes(k) || k.includes(q))) {
-          return item;
-        }
-      }
-      return null;
-    }
-
-    async function queryOpenFoodFacts(query) {
-      try {
-        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=5`);
-        const data = await res.json();
-        if (data.products && data.products.length > 0) {
-          const p = data.products[0];
-          return {
-            p: parseFloat(p.nutriments?.proteins_100g || 0),
-            c: parseFloat(p.nutriments?.carbohydrates_100g || 0),
-            f: parseFloat(p.nutriments?.fat_100g || 0)
-          };
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-      return null;
-    }
-
-    async function handleFoodSubmit(e) {
-      e.preventDefault();
-      const status = document.getElementById('statusMessage');
-
-      if (currentMode === 'manual') {
-        const name = document.getElementById('manualName').value.trim() || 'Custom Meal';
-        const p = parseFloat(document.getElementById('manP').value) || 0;
-        const c = parseFloat(document.getElementById('manC').value) ||
+      { keys: ["plant protein"], p: 75.0,
