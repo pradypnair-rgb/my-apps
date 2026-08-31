@@ -6,7 +6,7 @@
   <title>HabitBox • Daily Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #F8FAFC;
@@ -19,12 +19,12 @@
       --success: #10B981;
       --cell-empty: #E2E8F0;
       --radius: 16px;
-      --transition: all 0.2s ease-in-out;
+      --transition: all 0.15s ease-in-out;
 
-      --habit-color-1: #F97316; /* Orange */
-      --habit-color-2: #8B5CF6; /* Purple */
-      --habit-color-3: #0EA5E9; /* Cyan */
-      --habit-color-4: #10B981; /* Green */
+      --habit-color-1: #F97316;
+      --habit-color-2: #8B5CF6;
+      --habit-color-3: #0EA5E9;
+      --habit-color-4: #10B981;
     }
 
     * {
@@ -32,6 +32,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -41,7 +42,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2.5rem 1rem;
+      padding: 2rem 1rem;
     }
 
     .container {
@@ -49,15 +50,14 @@
       max-width: 620px;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
-    /* Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 0.5rem;
+      padding: 0 0.25rem;
     }
 
     h1 {
@@ -88,7 +88,6 @@
       color: var(--accent);
     }
 
-    /* Habit Cards */
     .habit-list {
       display: flex;
       flex-direction: column;
@@ -162,7 +161,7 @@
       font-weight: 700;
     }
 
-    /* Day Selectors */
+    /* Interactive Week Row */
     .habit-checkbox-row {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -170,7 +169,7 @@
     }
 
     .day-check-btn {
-      height: 64px;
+      height: 68px;
       border-radius: 12px;
       border: 1.5px solid var(--card-border);
       background: var(--card-bg);
@@ -181,12 +180,20 @@
       justify-content: center;
       gap: 0.2rem;
       transition: var(--transition);
-      user-select: none;
+      outline: none;
+    }
+
+    .day-check-btn * {
+      pointer-events: none; /* Prevents inner text from swallowing click */
     }
 
     .day-check-btn:hover {
-      border-color: #CBD5E1;
+      border-color: #94A3B8;
       transform: translateY(-2px);
+    }
+
+    .day-check-btn:active {
+      transform: translateY(0px);
     }
 
     .day-label {
@@ -217,12 +224,26 @@
     }
 
     /* 30-Day Heatmap */
+    .heatmap-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .heatmap-header {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
     .heatmap-cells {
       display: flex;
       justify-content: space-between;
       gap: 4px;
-      padding-top: 1rem;
-      border-top: 1px solid var(--card-border);
     }
 
     .heatmap-box {
@@ -230,7 +251,12 @@
       aspect-ratio: 1;
       border-radius: 3px;
       background: var(--cell-empty);
-      transition: background-color 0.2s ease;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .heatmap-box:hover {
+      transform: scale(1.2);
     }
 
     .heatmap-box.active {
@@ -255,6 +281,7 @@
       { id: '2', name: '3 ltrs of water', icon: '💧', history: {} }
     ];
 
+    // Load from local storage or initialize
     let habits = JSON.parse(localStorage.getItem('habits_box_data')) || default_habits;
 
     function saveState() {
@@ -264,15 +291,19 @@
 
     const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
+    function formatDate(d) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
     function getLast7Days() {
       const dates = [];
       for (let i = 6; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        dates.push(`${yyyy}-${mm}-${dd}`);
+        dates.push(formatDate(d));
       }
       return dates;
     }
@@ -282,10 +313,7 @@
       for (let i = 29; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        dates.push(`${yyyy}-${mm}-${dd}`);
+        dates.push(formatDate(d));
       }
       return dates;
     }
@@ -293,21 +321,14 @@
     function calculateStreak(history) {
       let streak = 0;
       let d = new Date();
-      
-      const format = (date) => {
-        const yyyy = date.getFullYear();
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const dd = String(date.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-      };
+      let todayStr = formatDate(d);
 
-      let currentStr = format(d);
-      if (!history[currentStr]) {
+      if (!history[todayStr]) {
         d.setDate(d.getDate() - 1);
       }
 
       while (true) {
-        const checkStr = format(d);
+        const checkStr = formatDate(d);
         if (history[checkStr]) {
           streak++;
           d.setDate(d.getDate() - 1);
@@ -318,8 +339,8 @@
       return streak;
     }
 
-    function toggleCheck(id, dateStr) {
-      const habit = habits.find(h => h.id === id);
+    function toggleDate(habitId, dateStr) {
+      const habit = habits.find(h => h.id === habitId);
       if (habit) {
         if (habit.history[dateStr]) {
           delete habit.history[dateStr];
@@ -336,7 +357,7 @@
       habitListEl.innerHTML = '';
       const recent7Days = getLast7Days();
       const recent30Days = getLast30Days();
-      const todayStr = recent7Days[recent7Days.length - 1];
+      const todayStr = formatDate(new Date());
 
       habits.forEach((habit, index) => {
         const streak = calculateStreak(habit.history);
@@ -358,7 +379,7 @@
           </div>
         `;
 
-        // 7-Day interactive row
+        // 7-Day Buttons (Click any day to mark/unmark)
         const checkRow = document.createElement('div');
         checkRow.className = 'habit-checkbox-row';
 
@@ -370,32 +391,46 @@
           const isToday = (dateStr === todayStr);
 
           const btn = document.createElement('button');
+          btn.type = 'button';
           btn.className = `day-check-btn ${isDone ? 'checked' : ''} ${isToday ? 'today' : ''}`;
           btn.innerHTML = `
             <span class="day-label">${dayName}</span>
             <span class="day-date">${d.getDate()}</span>
           `;
           
-          btn.addEventListener('click', () => {
-            toggleCheck(habit.id, dateStr);
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDate(habit.id, dateStr);
           });
 
           checkRow.appendChild(btn);
         });
 
         // 30-Day Heatmap
+        const heatmapSec = document.createElement('div');
+        heatmapSec.className = 'heatmap-section';
+        heatmapSec.innerHTML = `<span class="heatmap-header">Last 30 Days (Click square to toggle)</span>`;
+
         const heatmap = document.createElement('div');
         heatmap.className = 'heatmap-cells';
         recent30Days.forEach(dateStr => {
           const box = document.createElement('div');
           box.className = `heatmap-box ${habit.history[dateStr] ? 'active' : ''}`;
-          box.title = dateStr;
+          box.title = `Date: ${dateStr} - Click to toggle`;
+          
+          box.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDate(habit.id, dateStr);
+          });
+
           heatmap.appendChild(box);
         });
 
+        heatmapSec.appendChild(heatmap);
+
         card.appendChild(header);
         card.appendChild(checkRow);
-        card.appendChild(heatmap);
+        card.appendChild(heatmapSec);
         habitListEl.appendChild(card);
       });
     }
@@ -411,10 +446,11 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `habits-backup.json`;
+      a.download = `habitbox-backup-${formatDate(new Date())}.json`;
       a.click();
     });
 
+    // Render immediately
     render();
   </script>
 </body>
