@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Daily Macro & Protein Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -200,24 +200,47 @@
       color: var(--primary);
     }
 
-    .form-row {
+    /* Fixed Input Groups & Grid */
+    .form-col {
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.6rem;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
     }
 
-    input[type="text"], input[type="number"], input[type="date"] {
-      flex: 1;
-      padding: 0.75rem 0.85rem;
+    .form-row-auto {
+      display: grid;
+      grid-template-columns: 1fr 85px 105px;
+      gap: 0.5rem;
+    }
+
+    .form-row-manual-macros {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    input[type="text"], input[type="number"], input[type="date"], select {
+      width: 100%;
+      min-width: 0;
+      padding: 0.75rem 0.75rem;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       background: #ffffff;
       color: var(--text-main);
       outline: none;
     }
 
-    input:focus {
+    select {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-muted);
+      background-color: var(--bg);
+    }
+
+    input:focus, select:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
@@ -237,10 +260,6 @@
 
     .btn-submit:hover {
       background: var(--primary-hover);
-    }
-
-    .btn-submit:active {
-      transform: scale(0.99);
     }
 
     .status-msg {
@@ -419,18 +438,23 @@
         </div>
 
         <form id="addFoodForm">
-          <div id="autoInputs">
-            <div class="form-row">
-              <input type="text" id="autoFoodName" placeholder="e.g. Oats, Mutton Curry, Greek Yogurt, Paneer, Chicken..." autocomplete="off">
-              <input type="number" id="autoFoodGrams" placeholder="Grams" style="max-width: 110px;" value="100" min="1">
+          <div id="autoInputs" class="form-col">
+            <div class="form-row-auto">
+              <input type="text" id="autoFoodName" placeholder="e.g. Banana, Oats, Egg, Mutton..." autocomplete="off">
+              <input type="number" id="autoFoodQty" placeholder="Qty" value="1" step="any" min="0.1">
+              <select id="autoFoodUnit">
+                <option value="item">item / pc</option>
+                <option value="half">half</option>
+                <option value="g">grams (g)</option>
+                <option value="scoop">scoop</option>
+                <option value="tbsp">tbsp</option>
+              </select>
             </div>
           </div>
 
-          <div id="manualInputs" style="display: none;">
-            <div class="form-row">
-              <input type="text" id="manualName" placeholder="Item Name (e.g. Protein Shake)">
-            </div>
-            <div class="form-row">
+          <div id="manualInputs" class="form-col" style="display: none;">
+            <input type="text" id="manualName" placeholder="Item Name (e.g. Protein Smoothie, Snack)">
+            <div class="form-row-manual-macros">
               <input type="number" id="manP" placeholder="Protein (g)" step="0.1" min="0">
               <input type="number" id="manC" placeholder="Carbs (g)" step="0.1" min="0">
               <input type="number" id="manF" placeholder="Fats (g)" step="0.1" min="0">
@@ -480,8 +504,20 @@
   </div>
 
   <script>
-    // Master Nutrition DB per 100g (or standard unit)
+    // Master Nutrition DB per 100g or per 1 whole unit (unitWeight: average weight in grams)
     const macroDB = [
+      // Fruits & Pieces
+      { keys: ["banana", "bananas", "kela"], p: 1.3, c: 27.0, f: 0.3, isUnit: true, unitName: "banana", unitWeight: 118 },
+      { keys: ["apple", "apples", "seb"], p: 0.5, c: 25.0, f: 0.3, isUnit: true, unitName: "apple", unitWeight: 180 },
+      { keys: ["egg", "eggs", "boiled egg", "anda"], p: 6.3, c: 0.6, f: 5.3, isUnit: true, unitName: "egg", unitWeight: 50 },
+      { keys: ["egg white", "egg whites"], p: 3.6, c: 0.2, f: 0.1, isUnit: true, unitName: "egg white", unitWeight: 33 },
+      { keys: ["roti", "chapati", "wheat roti", "phulka"], p: 3.2, c: 18.0, f: 0.8, isUnit: true, unitName: "roti", unitWeight: 40 },
+
+      // Protein Powders & Spreads
+      { keys: ["whey", "whey protein", "protein powder", "plant protein"], p: 24.0, c: 2.0, f: 1.5, isUnit: true, unitName: "scoop", unitWeight: 30 },
+      { keys: ["peanut butter"], p: 4.0, c: 3.2, f: 8.0, isUnit: true, unitName: "tbsp", unitWeight: 16 },
+
+      // Staples per 100g
       { keys: ["oat", "oats", "rolled oats", "oatmeal"], p: 13.5, c: 68.0, f: 6.5 },
       { keys: ["muesli", "granola"], p: 11.0, c: 66.0, f: 5.5 },
       { keys: ["mutton curry", "mutton gravy", "lamb curry", "goat curry"], p: 16.5, c: 4.5, f: 12.0 },
@@ -493,22 +529,15 @@
       { keys: ["curd", "yogurt", "dahi"], p: 3.5, c: 4.7, f: 3.2 },
       { keys: ["paneer", "cottage cheese"], p: 18.0, c: 3.0, f: 20.0 },
       { keys: ["tofu"], p: 17.0, c: 2.0, f: 9.0 },
-      { keys: ["egg white"], p: 11.0, c: 0.7, f: 0.2 },
-      { keys: ["egg", "eggs", "boiled egg"], p: 13.0, c: 1.1, f: 10.5 },
-      { keys: ["peanut butter"], p: 25.0, c: 20.0, f: 50.0 },
-      { keys: ["whey", "whey protein", "protein powder"], p: 80.0, c: 5.0, f: 3.0 },
-      { keys: ["plant protein", "pea protein"], p: 75.0, c: 8.0, f: 4.0 },
-      { keys: ["protein smoothie", "oats smoothie", "smoothie"], p: 12.0, c: 24.0, f: 3.5 },
       { keys: ["dal", "daal", "lentils", "yellow dal", "moong dal"], p: 6.5, c: 18.0, f: 2.5 },
       { keys: ["chana", "chickpeas", "chole"], p: 8.9, c: 27.0, f: 2.6 },
       { keys: ["rajma", "kidney beans"], p: 8.7, c: 23.0, f: 0.5 },
       { keys: ["soya chunks", "soy chunks", "soya"], p: 52.0, c: 33.0, f: 0.5 },
-      { keys: ["roti", "chapati", "wheat roti"], p: 8.0, c: 45.0, f: 3.0 },
       { keys: ["rice", "white rice", "cooked rice"], p: 2.7, c: 28.0, f: 0.3 },
       { keys: ["milk", "whole milk"], p: 3.4, c: 4.8, f: 3.5 },
       { keys: ["almond", "almonds", "badam"], p: 21.0, c: 22.0, f: 49.0 },
       { keys: ["chia seed", "chia seeds"], p: 16.5, c: 42.0, f: 30.7 },
-      { keys: ["fish", "salmon", "tilapia"], p: 22.0, c: 0.0, f: 6.0 }
+      { keys: ["protein smoothie", "smoothie"], p: 15.0, c: 25.0, f: 4.0 }
     ];
 
     function toISODate(d) {
@@ -567,8 +596,8 @@
       currentMode = mode;
       document.getElementById('btnModeAuto').classList.toggle('active', mode === 'auto');
       document.getElementById('btnModeManual').classList.toggle('active', mode === 'manual');
-      document.getElementById('autoInputs').style.display = mode === 'auto' ? 'block' : 'none';
-      document.getElementById('manualInputs').style.display = mode === 'manual' ? 'block' : 'none';
+      document.getElementById('autoInputs').style.display = mode === 'auto' ? 'flex' : 'none';
+      document.getElementById('manualInputs').style.display = mode === 'manual' ? 'flex' : 'none';
       setStatus('');
     }
 
@@ -622,7 +651,6 @@
 
     document.getElementById('addFoodForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const activeDateStr = toISODate(currentDate);
 
       if (currentMode === 'manual') {
@@ -646,33 +674,60 @@
       }
 
       // Auto Mode
-      const query = document.getElementById('autoFoodName').value.trim();
-      const grams = parseFloat(document.getElementById('autoFoodGrams').value);
+      let rawQuery = document.getElementById('autoFoodName').value.trim();
+      let qty = parseFloat(document.getElementById('autoFoodQty').value);
+      const unit = document.getElementById('autoFoodUnit').value;
 
-      if (!query || isNaN(grams) || grams <= 0) {
-        setStatus('Please enter food name and weight.', 'error');
+      if (!rawQuery || isNaN(qty) || qty <= 0) {
+        setStatus('Please enter food name and quantity.', 'error');
         return;
       }
 
-      const factor = grams / 100;
-      const localMatch = findInLocalDB(query);
+      // Handle "half" in query text or selector
+      if (rawQuery.toLowerCase().startsWith('half ')) {
+        rawQuery = rawQuery.replace(/^half\s+/i, '');
+        qty = qty * 0.5;
+      } else if (unit === 'half') {
+        qty = qty * 0.5;
+      }
+
+      const localMatch = findInLocalDB(rawQuery);
+      let calculatedP = 0, calculatedC = 0, calculatedF = 0, detailLabel = '';
 
       if (localMatch) {
-        saveEntry(activeDateStr, query, localMatch.p * factor, localMatch.c * factor, localMatch.f * factor, `${grams}g`);
+        if (localMatch.isUnit && (unit === 'item' || unit === 'half' || unit === 'scoop' || unit === 'tbsp')) {
+          calculatedP = localMatch.p * qty;
+          calculatedC = localMatch.c * qty;
+          calculatedF = localMatch.f * qty;
+          detailLabel = `${qty} ${localMatch.unitName || 'unit'}`;
+        } else {
+          // Weight calculation
+          const totalGrams = (unit === 'g') ? qty : (localMatch.unitWeight ? (qty * localMatch.unitWeight) : (qty * 100));
+          const factor = totalGrams / 100;
+          calculatedP = localMatch.p * factor;
+          calculatedC = localMatch.c * factor;
+          calculatedF = localMatch.f * factor;
+          detailLabel = `${totalGrams}g`;
+        }
+
+        saveEntry(activeDateStr, rawQuery, calculatedP, calculatedC, calculatedF, detailLabel);
         document.getElementById('autoFoodName').value = '';
-        setStatus(`Logged ${grams}g ${query}!`, 'success');
+        setStatus(`Logged ${detailLabel} ${rawQuery}!`, 'success');
         return;
       }
 
+      // Web API fallback (calculates as grams)
       setStatus('Searching online database...', 'info');
-      const webMatch = await queryOpenFoodFacts(query);
+      const totalGrams = (unit === 'g') ? qty : (qty * 100);
+      const factor = totalGrams / 100;
+      const webMatch = await queryOpenFoodFacts(rawQuery);
 
       if (webMatch) {
-        saveEntry(activeDateStr, query, webMatch.p * factor, webMatch.c * factor, webMatch.f * factor, `${grams}g (Web)`);
+        saveEntry(activeDateStr, rawQuery, webMatch.p * factor, webMatch.c * factor, webMatch.f * factor, `${totalGrams}g (Web)`);
         document.getElementById('autoFoodName').value = '';
-        setStatus(`Logged ${grams}g ${query}!`, 'success');
+        setStatus(`Logged ${totalGrams}g ${rawQuery}!`, 'success');
       } else {
-        setStatus(`No entry found for "${query}". Switch to Manual Macro Entry.`, 'error');
+        setStatus(`No entry found for "${rawQuery}". Switch to Manual Macro Entry.`, 'error');
       }
     });
 
@@ -793,7 +848,6 @@
       document.getElementById('avgCals').textContent = Math.round(totalCals / daysCount);
     }
 
-    // Initialize on load
     syncDateDisplay();
   </script>
 </body>
