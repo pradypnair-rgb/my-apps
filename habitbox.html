@@ -21,10 +21,11 @@
       --radius: 16px;
       --transition: all 0.15s ease-in-out;
 
-      --habit-color-1: #F97316;
-      --habit-color-2: #8B5CF6;
-      --habit-color-3: #0EA5E9;
-      --habit-color-4: #10B981;
+      --orange: #FF6B35;
+      --blue: #2563EB;
+      --pink: #E11D48;
+      --purple: #8B5CF6;
+      --cyan: #0EA5E9;
     }
 
     * {
@@ -67,7 +68,7 @@
     }
 
     h1 span {
-      color: var(--habit-color-2);
+      color: var(--purple);
     }
 
     button.export {
@@ -104,7 +105,7 @@
       padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.1rem;
     }
 
     .habit-card::before {
@@ -116,10 +117,8 @@
       height: 6px;
     }
 
-    .habit-card[data-index="0"]::before { background-color: var(--habit-color-1); }
-    .habit-card[data-index="1"]::before { background-color: var(--habit-color-2); }
-    .habit-card[data-index="2"]::before { background-color: var(--habit-color-3); }
-    .habit-card[data-index="3"]::before { background-color: var(--habit-color-4); }
+    .habit-card[data-index="0"]::before { background-color: var(--orange); }
+    .habit-card[data-index="1"]::before { background-color: var(--purple); }
 
     .habit-header {
       display: flex;
@@ -149,19 +148,41 @@
       font-weight: 700;
     }
 
+    .header-pills {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
     .streak-badge {
       display: flex;
       align-items: center;
       gap: 0.35rem;
       background-color: #ECFDF5;
       color: #059669;
-      padding: 0.35rem 0.7rem;
+      padding: 0.35rem 0.65rem;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
     }
 
-    /* Interactive Week Row */
+    .stats-btn {
+      background: #F1F5F9;
+      border: none;
+      padding: 0.35rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .stats-btn:hover {
+      background: #DBEAFE;
+    }
+
+    /* 7-Day Buttons */
     .habit-checkbox-row {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -169,7 +190,7 @@
     }
 
     .day-check-btn {
-      height: 68px;
+      height: 66px;
       border-radius: 12px;
       border: 1.5px solid var(--card-border);
       background: var(--card-bg);
@@ -184,16 +205,12 @@
     }
 
     .day-check-btn * {
-      pointer-events: none; /* Prevents inner text from swallowing click */
+      pointer-events: none;
     }
 
     .day-check-btn:hover {
       border-color: #94A3B8;
       transform: translateY(-2px);
-    }
-
-    .day-check-btn:active {
-      transform: translateY(0px);
     }
 
     .day-label {
@@ -223,27 +240,13 @@
       color: #FFFFFF !important;
     }
 
-    /* 30-Day Heatmap */
-    .heatmap-section {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      padding-top: 0.85rem;
-      border-top: 1px solid var(--card-border);
-    }
-
-    .heatmap-header {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
+    /* 30-Day Heatmap Mini-Bar */
     .heatmap-cells {
       display: flex;
       justify-content: space-between;
       gap: 4px;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--card-border);
     }
 
     .heatmap-box {
@@ -255,12 +258,190 @@
       transition: var(--transition);
     }
 
-    .heatmap-box:hover {
-      transform: scale(1.2);
-    }
-
     .heatmap-box.active {
       background: var(--success);
+    }
+
+    /* ========================================================= */
+    /* Monthly Stats Modal (Inspired by your screenshots)       */
+    /* ========================================================= */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 480px;
+      padding: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-close {
+      background: #F1F5F9;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    /* Metric Stat Tiles */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+    }
+
+    .stat-tile {
+      border-radius: 14px;
+      padding: 0.85rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+    }
+
+    .stat-tile.orange { background: linear-gradient(135deg, #FF7A00, #FF5500); }
+    .stat-tile.blue { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+    .stat-tile.pink { background: linear-gradient(135deg, #E11D48, #BE123C); }
+
+    .stat-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 0.25rem;
+      opacity: 0.9;
+    }
+
+    .stat-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    /* Month Navigation Header */
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 0.5rem;
+    }
+
+    .month-nav-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text);
+      padding: 0.25rem 0.5rem;
+    }
+
+    .month-display {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    /* Calendar Grid */
+    .calendar-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: #F8FAFC;
+      border-radius: 16px;
+      padding: 1rem;
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .cal-days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .cal-day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--text);
+      user-select: none;
+    }
+
+    .cal-day-cell.empty {
+      cursor: default;
+    }
+
+    .cal-day-cell:not(.empty):hover {
+      background: #E2E8F0;
+    }
+
+    .cal-day-cell.done {
+      background: var(--blue) !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    .cal-day-cell.today-circle {
+      box-shadow: 0 0 0 2px var(--accent);
     }
   </style>
 </head>
@@ -275,18 +456,61 @@
     <div class="habit-list" id="habit-list"></div>
   </div>
 
+  <!-- Monthly Stats Modal -->
+  <div class="modal-overlay" id="stats-modal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <div class="modal-title" id="modal-habit-title">🏃‍♂️ Exercise</div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+
+      <!-- Stat Tiles -->
+      <div class="stats-grid">
+        <div class="stat-tile orange">
+          <span class="stat-label">Longest Streak</span>
+          <span class="stat-val" id="stat-best-streak">0</span>
+        </div>
+        <div class="stat-tile blue">
+          <span class="stat-label">This Month</span>
+          <span class="stat-val" id="stat-month-count">0</span>
+        </div>
+        <div class="stat-tile pink">
+          <span class="stat-label">Month Rate</span>
+          <span class="stat-val" id="stat-month-rate">0%</span>
+        </div>
+      </div>
+
+      <!-- Calendar Controls -->
+      <div class="calendar-header">
+        <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
+        <span class="month-display" id="month-name-display">Month 2026</span>
+        <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
+      </div>
+
+      <!-- Full Month Calendar -->
+      <div class="calendar-body">
+        <div class="cal-weekdays">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div class="cal-days-grid" id="calendar-days"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const default_habits = [
       { id: '1', name: 'Exercise', icon: '🏃‍♂️', history: {} },
       { id: '2', name: '3 ltrs of water', icon: '💧', history: {} }
     ];
 
-    // Load from local storage or initialize
     let habits = JSON.parse(localStorage.getItem('habits_box_data')) || default_habits;
+    let selectedHabitId = null;
+    let viewDate = new Date();
 
     function saveState() {
       localStorage.setItem('habits_box_data', JSON.stringify(habits));
       render();
+      if (selectedHabitId) renderModal();
     }
 
     const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
@@ -318,6 +542,7 @@
       return dates;
     }
 
+    // Calculate current streak
     function calculateStreak(history) {
       let streak = 0;
       let d = new Date();
@@ -339,6 +564,29 @@
       return streak;
     }
 
+    // Calculate longest streak across history
+    function calculateBestStreak(history) {
+      const sortedDates = Object.keys(history).filter(d => history[d]).sort();
+      if (sortedDates.length === 0) return 0;
+
+      let maxStreak = 1;
+      let currentStreak = 1;
+
+      for (let i = 1; i < sortedDates.length; i++) {
+        const prev = new Date(sortedDates[i - 1]);
+        const curr = new Date(sortedDates[i]);
+        const diffDays = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+          currentStreak++;
+          if (currentStreak > maxStreak) maxStreak = currentStreak;
+        } else if (diffDays > 1) {
+          currentStreak = 1;
+        }
+      }
+      return maxStreak;
+    }
+
     function toggleDate(habitId, dateStr) {
       const habit = habits.find(h => h.id === habitId);
       if (habit) {
@@ -351,6 +599,7 @@
       }
     }
 
+    // Main App Renderer
     const habitListEl = document.getElementById('habit-list');
 
     function render() {
@@ -364,7 +613,7 @@
         
         const card = document.createElement('div');
         card.className = 'habit-card';
-        card.setAttribute('data-index', index % 4);
+        card.setAttribute('data-index', index % 2);
 
         // Header
         const header = document.createElement('div');
@@ -374,12 +623,13 @@
             <div class="habit-icon">${habit.icon}</div>
             <div class="habit-title">${escapeHtml(habit.name)}</div>
           </div>
-          <div class="streak-badge">
-            🔥 ${streak} day${streak === 1 ? '' : 's'}
+          <div class="header-pills">
+            <button class="stats-btn" onclick="openModal('${habit.id}')">📊 Stats & Cal</button>
+            <div class="streak-badge">🔥 ${streak}d</div>
           </div>
         `;
 
-        // 7-Day Buttons (Click any day to mark/unmark)
+        // 7-Day Buttons (Backfillable)
         const checkRow = document.createElement('div');
         checkRow.className = 'habit-checkbox-row';
 
@@ -407,16 +657,12 @@
         });
 
         // 30-Day Heatmap
-        const heatmapSec = document.createElement('div');
-        heatmapSec.className = 'heatmap-section';
-        heatmapSec.innerHTML = `<span class="heatmap-header">Last 30 Days (Click square to toggle)</span>`;
-
         const heatmap = document.createElement('div');
         heatmap.className = 'heatmap-cells';
         recent30Days.forEach(dateStr => {
           const box = document.createElement('div');
           box.className = `heatmap-box ${habit.history[dateStr] ? 'active' : ''}`;
-          box.title = `Date: ${dateStr} - Click to toggle`;
+          box.title = dateStr;
           
           box.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -426,13 +672,88 @@
           heatmap.appendChild(box);
         });
 
-        heatmapSec.appendChild(heatmap);
-
         card.appendChild(header);
         card.appendChild(checkRow);
-        card.appendChild(heatmapSec);
+        card.appendChild(heatmap);
         habitListEl.appendChild(card);
       });
+    }
+
+    // Modal & Calendar Logic
+    function openModal(habitId) {
+      selectedHabitId = habitId;
+      viewDate = new Date();
+      document.getElementById('stats-modal').classList.add('open');
+      renderModal();
+    }
+
+    function closeModal() {
+      document.getElementById('stats-modal').classList.remove('open');
+      selectedHabitId = null;
+    }
+
+    function changeMonth(delta) {
+      viewDate.setMonth(viewDate.getMonth() + delta);
+      renderModal();
+    }
+
+    function renderModal() {
+      const habit = habits.find(h => h.id === selectedHabitId);
+      if (!habit) return;
+
+      document.getElementById('modal-habit-title').innerHTML = `${habit.icon} ${escapeHtml(habit.name)}`;
+
+      const year = viewDate.getFullYear();
+      const month = viewDate.getMonth();
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      document.getElementById('month-name-display').innerText = `${monthNames[month]} ${year}`;
+
+      // Calculate Month Metrics
+      const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+      let monthCompleted = 0;
+
+      for (let day = 1; day <= totalDaysInMonth; day++) {
+        const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        if (habit.history[dStr]) monthCompleted++;
+      }
+
+      const bestStreak = calculateBestStreak(habit.history);
+      const completionRate = Math.round((monthCompleted / totalDaysInMonth) * 100);
+
+      document.getElementById('stat-best-streak').innerText = `${bestStreak}d`;
+      document.getElementById('stat-month-count').innerText = monthCompleted;
+      document.getElementById('stat-month-rate').innerText = `${completionRate}%`;
+
+      // Build Calendar Grid
+      const calendarDaysEl = document.getElementById('calendar-days');
+      calendarDaysEl.innerHTML = '';
+
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const todayStr = formatDate(new Date());
+
+      // Empty lead days
+      for (let i = 0; i < firstDayIndex; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'cal-day-cell empty';
+        calendarDaysEl.appendChild(emptyCell);
+      }
+
+      // Actual days
+      for (let day = 1; day <= totalDaysInMonth; day++) {
+        const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isDone = Boolean(habit.history[dStr]);
+        const isToday = (dStr === todayStr);
+
+        const cell = document.createElement('div');
+        cell.className = `cal-day-cell ${isDone ? 'done' : ''} ${isToday ? 'today-circle' : ''}`;
+        cell.innerText = day;
+
+        cell.addEventListener('click', () => {
+          toggleDate(habit.id, dStr);
+        });
+
+        calendarDaysEl.appendChild(cell);
+      }
     }
 
     function escapeHtml(text) {
@@ -450,7 +771,6 @@
       a.click();
     });
 
-    // Render immediately
     render();
   </script>
 </body>
