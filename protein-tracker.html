@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Daily Macro & Protein Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -285,7 +285,7 @@
     .status-msg {
       font-size: 0.72rem;
       min-height: 1rem;
-      font-weight: 500;
+      font-weight: 600;
     }
     .status-msg.info { color: var(--accent); }
     .status-msg.error { color: var(--danger); }
@@ -463,7 +463,7 @@
         <form id="addFoodForm" class="form-group">
           <div id="autoInputs">
             <div class="input-row-auto">
-              <input type="text" id="autoFoodName" placeholder="e.g. Methi Thepla, Oats, Banana..." autocomplete="off">
+              <input type="text" id="autoFoodName" placeholder="e.g. Idli, Methi Thepla, Oats..." autocomplete="off">
               <input type="number" id="autoFoodQty" placeholder="Qty" value="1" step="any" min="0.1">
               <select id="autoFoodUnit">
                 <option value="item">item / pc</option>
@@ -484,7 +484,7 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-add">+ Log Entry</button>
+          <button type="submit" class="btn-add" id="btnLogFood">+ Log Entry</button>
           <div class="status-msg" id="statusMessage"></div>
         </form>
       </div>
@@ -526,15 +526,18 @@
 
   <script>
     const macroDB = [
-      // Breads, Theplas & Indian Breakfasts (Configured with unit piece weights)
+      // Idli & South Indian
+      { keys: ["idli", "idlis", "idly", "steamed idli"], p: 2.0, c: 12.0, f: 0.2, isUnit: true, unitName: "idli", unitWeight: 45 },
+      { keys: ["dosa", "plain dosa", "sada dosa"], p: 3.8, c: 28.0, f: 3.5, isUnit: true, unitName: "dosa", unitWeight: 80 },
+      { keys: ["masala dosa"], p: 5.2, c: 42.0, f: 8.5, isUnit: true, unitName: "dosa", unitWeight: 140 },
+      { keys: ["sambar"], p: 3.5, c: 10.0, f: 1.5, isUnit: true, unitName: "bowl (150g)", unitWeight: 150 },
+
+      // Breads, Theplas & Indian Breakfasts
       { keys: ["thepla", "methi thepla", "theplas", "methi theplas"], p: 3.5, c: 18.0, f: 5.5, isUnit: true, unitName: "thepla", unitWeight: 45 },
       { keys: ["roti", "chapati", "wheat roti", "phulka", "rotis", "chapatis"], p: 3.2, c: 18.0, f: 0.8, isUnit: true, unitName: "roti", unitWeight: 40 },
       { keys: ["paratha", "plain paratha"], p: 4.5, c: 30.0, f: 9.0, isUnit: true, unitName: "paratha", unitWeight: 75 },
       { keys: ["aloo paratha"], p: 4.8, c: 38.0, f: 11.0, isUnit: true, unitName: "paratha", unitWeight: 100 },
       { keys: ["paneer paratha"], p: 9.5, c: 32.0, f: 13.5, isUnit: true, unitName: "paratha", unitWeight: 110 },
-      { keys: ["idli", "idlis"], p: 2.0, c: 12.0, f: 0.2, isUnit: true, unitName: "idli", unitWeight: 45 },
-      { keys: ["dosa", "plain dosa", "sada dosa"], p: 3.8, c: 28.0, f: 3.5, isUnit: true, unitName: "dosa", unitWeight: 80 },
-      { keys: ["masala dosa"], p: 5.2, c: 42.0, f: 8.5, isUnit: true, unitName: "dosa", unitWeight: 140 },
       { keys: ["besan chilla", "chilla", "cheela"], p: 7.0, c: 18.0, f: 5.0, isUnit: true, unitName: "chilla", unitWeight: 70 },
       { keys: ["poha"], p: 2.8, c: 23.0, f: 4.5, isUnit: true, unitName: "bowl (150g)", unitWeight: 150 },
       { keys: ["upma"], p: 3.2, c: 24.0, f: 5.0, isUnit: true, unitName: "bowl (150g)", unitWeight: 150 },
@@ -550,7 +553,7 @@
       { keys: ["peanut butter"], p: 4.0, c: 3.2, f: 8.0, isUnit: true, unitName: "tbsp", unitWeight: 16 },
       { keys: ["milk", "whole milk", "toned milk", "cow milk"], p: 3.4, c: 4.8, f: 3.5, isUnit: true, unitName: "glass (200ml)", unitWeight: 200 },
 
-      // Cooked Dishes & Staples (Values calculated per 100g)
+      // Cooked Dishes & Staples (Per 100g)
       { keys: ["oat", "oats", "rolled oats", "oatmeal"], p: 13.5, c: 68.0, f: 6.5 },
       { keys: ["muesli", "granola"], p: 11.0, c: 66.0, f: 5.5 },
       { keys: ["mutton curry", "mutton gravy", "lamb curry", "goat curry"], p: 16.5, c: 4.5, f: 12.0 },
@@ -717,11 +720,14 @@
       }
 
       let rawQuery = document.getElementById('autoFoodName').value.trim();
-      let qty = parseFloat(document.getElementById('autoFoodQty').value);
+      let qtyInput = document.getElementById('autoFoodQty').value;
+      let qty = parseFloat(qtyInput);
+      if (isNaN(qty) || qty <= 0) qty = 1; // Auto-default to 1 if blank
+
       const unit = document.getElementById('autoFoodUnit').value;
 
-      if (!rawQuery || isNaN(qty) || qty <= 0) {
-        setStatus('Enter food name and quantity.', 'error');
+      if (!rawQuery) {
+        setStatus('Please type a food name.', 'error');
         return;
       }
 
@@ -752,6 +758,7 @@
 
         saveEntry(activeDateStr, rawQuery, calculatedP, calculatedC, calculatedF, detailLabel);
         document.getElementById('autoFoodName').value = '';
+        document.getElementById('autoFoodQty').value = '1';
         setStatus(`Logged ${detailLabel} ${rawQuery}!`, 'success');
         return;
       }
@@ -764,6 +771,7 @@
       if (webMatch) {
         saveEntry(activeDateStr, rawQuery, webMatch.p * factor, webMatch.c * factor, webMatch.f * factor, `${totalGrams}g (Web)`);
         document.getElementById('autoFoodName').value = '';
+        document.getElementById('autoFoodQty').value = '1';
         setStatus(`Logged ${totalGrams}g ${rawQuery}!`, 'success');
       } else {
         setStatus(`No match for "${rawQuery}". Use Manual mode.`, 'error');
@@ -819,4 +827,75 @@
         return;
       }
 
-      dayLogs.
+      dayLogs.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'feed-row';
+        li.innerHTML = `
+          <div>
+            <div class="feed-name">${item.name} <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);">(${item.details})</span></div>
+            <div class="feed-tags">
+              <span class="tag-val p">${item.p}g P</span> • 
+              <span class="tag-val c">${item.c}g C</span> • 
+              <span class="tag-val f">${item.f}g F</span> • 
+              <span>${item.cals} kcal</span>
+            </div>
+          </div>
+          <button type="button" class="btn-del" onclick="deleteEntry(${item.id})">&times;</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function renderDashboard(daysCount) {
+      document.getElementById('dashTitle').textContent = daysCount === 7 ? 'Weekly Total Consumption' : 'Monthly Total Consumption';
+      document.getElementById('dashSubtitle').textContent = `Total intake over the past ${daysCount} days`;
+
+      const chartFeed = document.getElementById('chartFeed');
+      chartFeed.innerHTML = '';
+
+      let totalP = 0, totalC = 0, totalF = 0, totalCals = 0;
+      const today = new Date();
+
+      for (let i = daysCount - 1; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const dateStr = toISODate(d);
+        const label = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+        const dayLogs = allLogs.filter(item => item.date === dateStr);
+        const p = dayLogs.reduce((acc, item) => acc + (Number(item.p) || 0), 0);
+        const c = dayLogs.reduce((acc, item) => acc + (Number(item.c) || 0), 0);
+        const f = dayLogs.reduce((acc, item) => acc + (Number(item.f) || 0), 0);
+        const cals = dayLogs.reduce((acc, item) => acc + (Number(item.cals) || 0), 0);
+
+        totalP += p; totalC += c; totalF += f; totalCals += cals;
+
+        const macroSum = (p + c + f) || 1;
+        const pPct = (p / macroSum) * 100;
+        const cPct = (c / macroSum) * 100;
+        const fPct = (f / macroSum) * 100;
+
+        const row = document.createElement('div');
+        row.className = 'chart-row';
+        row.innerHTML = `
+          <div class="chart-date">${label}</div>
+          <div class="chart-track" title="P: ${Math.round(p)}g | C: ${Math.round(c)}g | F: ${Math.round(f)}g">
+            <div class="bar-p" style="width: ${p ? pPct : 0}%"></div>
+            <div class="bar-c" style="width: ${c ? cPct : 0}%"></div>
+            <div class="bar-f" style="width: ${f ? fPct : 0}%"></div>
+          </div>
+          <div class="chart-val">${Math.round(p)}g P</div>
+        `;
+        chartFeed.appendChild(row);
+      }
+
+      document.getElementById('totalDashProtein').textContent = `${Math.round(totalP * 10) / 10}g`;
+      document.getElementById('totalDashCarbs').textContent = `${Math.round(totalC * 10) / 10}g`;
+      document.getElementById('totalDashFats').textContent = `${Math.round(totalF * 10) / 10}g`;
+      document.getElementById('totalDashCals').textContent = Math.round(totalCals);
+    }
+
+    syncDateDisplay();
+  </script>
+</body>
+</html>
